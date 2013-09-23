@@ -23,7 +23,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-03" >
+<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-04" >
   <front>
     <title abbrev="ActivityStreams">JSON Activity Streams 2.0</title>
 
@@ -120,6 +120,16 @@
           Refer to <xref target="deprecated-syntax" /> for more detail
           about the differences between the 1.0 and 2.0 syntax and for 
           a listing of specific backwards compatibility requirements.
+        </t>
+        
+        <t>
+          This specification incorporates several existing extensions
+          to the 1.0 syntax directly into the 2.0 model. These include 
+          portions of the <xref target="base-schema">Activity Streams 1.0 Base Schema</xref>,
+          <xref target="audience">Audience Targeting</xref>,
+          <xref target="responses">Responses</xref>,
+          and <xref target="priority">Priority</xref>
+          extensions.
         </t>
         
       </section>
@@ -1639,7 +1649,7 @@
       &rfc5646;  
       &jsonld; 
       
-      <reference anchor="activitystreams-1.0">
+      <reference anchor="activitystreams-1.0" target="http://activitystrea.ms/specs/json/1.0/">
         <front>
           <title abbrev="ActivityStreams">JSON Activity Streams 1.0</title>
 
@@ -1675,13 +1685,55 @@
               they allow individuals to process the latest news of people and things
               they care about.</t>
           </abstract>
-
+          
         </front>
+
       </reference>
       
     </references>
     <references title="Informational References">
       &rfc6963;
+      
+      <reference anchor="base-schema" target="https://github.com/activitystreams/activity-schema/blob/master/activity-schema.md">
+        <front>
+          <title abbrev="ActivityStreams">Activity Streams - Base Schema</title>
+           <author>
+            <organization>Activity Streams Workgroup</organization>
+          </author>
+          <date month="September" year="2012" />
+        </front>
+      </reference>
+      
+      <reference anchor="audience" target="http://activitystrea.ms/specs/json/targeting/1.0/">
+        <front>
+          <title abbrev="Audience Targeting">Audience Targeting for JSON Activity Streams</title>
+          <author fullname="James M Snell" initials="J.M." surname="Snell">
+            <organization>IBM</organization>
+          </author>
+          <date month="March" year="2012" />
+        </front>
+      </reference>
+      
+      <reference anchor="responses" target="http://activitystrea.ms/specs/json/replies/1.0/">
+        <front>
+          <title abbrev="Responses">Responses for Activity Streams</title>
+          <author fullname="James M Snell" initials="J.M." surname="Snell">
+            <organization>IBM</organization>
+          </author>
+          <date month="March" year="2012" />
+        </front>
+      </reference>
+      
+      <reference anchor="priority" target="https://raw.github.com/jasnell/specs/master/activitystrea.ms/priority_extension.txt">
+        <front>
+          <title abbrev="Priority">Priority Extension for JSON Activity Streams</title>
+          <author fullname="James M Snell" initials="J.M." surname="Snell">
+            <organization>IBM</organization>
+          </author>
+          <date month="June" year="2012" />
+        </front>
+      </reference>
+      
     </references>
 
     <section anchor="acknowledgements" title="Acknowledgements">
@@ -1840,6 +1892,24 @@
         "en": "A basic example"
       }
       ...
+    }
+  }
+        ]]></artwork></figure>
+        
+        <t>
+          It is also possible for a Natural Language Value to express 
+          alternative same-language representations of a string that 
+          utilize different writing systems or regions. For instance,
+          it is common for Japanese translations to provide equivalent 
+          ideographic (kanji) and phonetic (katakana or hiragana) 
+          alternatives:
+        </t>
+        
+        <figure><artwork><![CDATA[
+  {
+    "title": {
+      "ja-Hani": "...",
+      "ja-Kana": "..."
     }
   }
         ]]></artwork></figure>
