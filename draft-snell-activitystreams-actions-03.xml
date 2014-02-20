@@ -3,6 +3,11 @@
 <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
   <!ENTITY rfc2119 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml'>
   <!ENTITY rfc6570 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.6570.xml'> 
+  <!ENTITY rfc3339 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3339.xml'> 
+  <!ENTITY rfc4648 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.4648.xml'>
+  <!ENTITY rfc5646 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.5646.xml'>
+  <!ENTITY rfc3986 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3986.xml'>
+  <!ENTITY rfc3987 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.3987.xml'>
   <!ENTITY as2 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-snell-activitystreams-05.xml'>
 ]>
 
@@ -16,7 +21,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-actions-02" >
+<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-actions-03" >
   <front>
     <title abbrev="ActivityStreams">JSON Activity Streams 2.0 - Action Handlers</title>
 
@@ -34,7 +39,7 @@
       </address>
     </author>
 
-    <date month="December" year="2013" />
+    <date month="January" year="2014" />
     <area>General</area> 
     <workgroup>Activity Streams (http://activitystrea.ms)</workgroup>
     <keyword>JSON</keyword>
@@ -90,7 +95,8 @@
       <figure><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "Title of the note",
+    "content": "This is a simple note.",
     "actions": {
       "share": {
         "objectType": "HttpActionHandler",
@@ -145,20 +151,61 @@
         </c>
         
         <c>expects</c>
-        <c><xref target="I-D.snell-activitystreams">Type Value</xref></c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
         <c>No</c>
         <c>
           For action handlers with a distinct input requirement 
           (e.g. HttpActionHandler), the expects property provides 
-          a description of the expected input.
+          a description of the expected input. The value is expressed
+          as either a String containing a fully qualified IRI, an 
+          Activity Stream Object, or an Array of IRI's or Objects. 
+          When multiple values are provided, they MUST be considered
+          as mutually exclusive alternatives.
         </c>
         
         <c>returns</c>
-        <c><xref target="I-D.snell-activitystreams">Type Value</xref></c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
         <c>No</c>
         <c>
           For action handlers with a distinct output, the returns
           property provides a description of the expected output.
+          The value is expressed as either a String containing a 
+          fully qualified IRI, an Activity Stream Object, or an 
+          Array of IRI's or Objects. When multiple values are provided,
+          they MUST be considered as mutually exclusive alternatives.
+        </c>
+        
+        <c>auth</c>
+        <c><xref target="authentication">Authentication Value</xref></c>
+        <c>No</c>
+        <c>
+          For action handlers with specific authentication requirements,
+          the "auth" property provides information about the specific 
+          authentication mechanisms supported.
+        </c>
+        
+        <c>requires</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>No</c>
+        <c>
+          An optional Link Value whose value(s) describe features or behaviors
+          an implementation MUST support in order to carry out the action. 
+          Requirements are designed to be intentionally open-ended and will vary 
+          depending on specific Action Handler type. Any implementation that 
+          does not support any specified required feature MUST ignore the 
+          Action Handler.
+        </c>
+        
+        <c>prefers</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>No</c>
+        <c>
+          An optional Link Value whose value(s) describe features or behaviors
+          an implementation SHOULD support in order to carry out the action. 
+          Requirements are designed to be intentionally open-ended and will vary 
+          depending on specific Action Handler type. Any implementation that 
+          does not support any specified preferred feature MAY ignore the 
+          feature.
         </c>
         
       </texttable>
@@ -193,26 +240,33 @@
         associated action handlers:
       </t>
       
-      <figure><artwork>
+      <figure><artwork><![CDATA[
   {
-    "objectType": "note",
-    ...,
+    "objectType": "event",
+    "displayName": "Party!",
+    "content": "We're going to party like it's 1999!",
+    "id": "urn:example:events:123",
     "actions": {
       "share": [
         {
           "objectType": "HttpActionHandler",
           "method": "GET",
-          "url": "http://example.org/share-action"
+          "url": "http://example.org/share-action",
+          "target": "DIALOG",
+          "returns": {
+            "objectType": "TypedPayload",
+            "mediaType": "text/html"
+          }
         },
         {
           "objectType": "EmbedActionHandler",
-          "mediaType": "text/plain",
-          "content": "Hello World!"
+          "mediaType": "text/html",
+          "content": "<div>...</div>"
         }
       ]  
     }
   }
-      </artwork></figure>
+      ]]></artwork></figure>
       
     </section>
     
@@ -270,7 +324,8 @@
       <figure><preamble>For example:</preamble><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "view": {
         "objectType": "HttpActionHandler",
@@ -290,7 +345,8 @@
       <figure><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "view": "http://example.org/foo"
     }
@@ -315,7 +371,8 @@
       <figure><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "review": {
         "objectType": "HttpActionHandler",
@@ -327,8 +384,9 @@
             "rating": {
               "id": "http://schema.org/ratingValue",
               "displayName": "Rating",
-              "bestRating": 5,
-              "worstRating": 1
+              "maximum": 5,
+              "minimum": 1,
+              "format": "uint32"
             }
           }
         },
@@ -348,7 +406,8 @@
       <figure><preamble>"GET" HttpActionHandler shortcut using a URL Template:</preamble><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "review": {
         "objectType": "UrlTemplate",
@@ -357,8 +416,9 @@
           "rating": {
             "id": "http://schema.org/ratingValue",
             "displayName": "Rating",
-            "bestRating": 5,
-            "worstRating": 1
+            "maximum": 5,
+            "minimum": 1,
+            "format": "uint32"
           }
         }
       }
@@ -369,11 +429,13 @@
       <t>
         If the HTTP request requires an input payload, the HttpActionHandler
         object can contain an "expects" property. The value of "expects" is 
-        an Activity Streams 2.0 "Type Value" represented either as a simple
-        JSON string containing a fully qualified IRI or as an Activity Stream
-        object. This specification defines a new <xref target="htmlform">HtmlForm</xref>
-        objectType to be used whenever the input of the HTTP request is an 
-        HTML Form POST.
+        an Activity Streams 2.0 "Link Value" represented either as a simple
+        JSON string containing a fully qualified IRI, an Activity Stream
+        object, or an array of IRI's or Objects. This specification defines a 
+        new <xref target="htmlform">HtmlForm</xref> objectType to be used 
+        whenever the input of the HTTP request is an HTML Form POST. A new
+        <xref target="typedPayload">TypedPayload</xref> objectType is defined
+        for use whenever the input is an arbitrary MIME media type.
       </t>
       
       <t>
@@ -385,7 +447,8 @@
       <figure><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "share": {
         "objectType": "HttpActionHandler",
@@ -482,7 +545,8 @@
       <figure><artwork><![CDATA[
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "view": {
         "objectType": "EmbedActionHandler",
@@ -507,7 +571,8 @@
       <figure><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "view": {
         "objectType": "EmbedActionHandler",
@@ -527,7 +592,8 @@
       <figure><preamble>Example:</preamble><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "view": {
         "objectType": "EmbedActionHandler",
@@ -554,7 +620,8 @@
       <figure><preamble>For example:</preamble><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "share": {
         "objectType": "IntentActionHandler",
@@ -590,7 +657,8 @@
       <figure><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "share": {
         "objectType": "service",
@@ -630,7 +698,8 @@
       <figure><preamble>For example:</preamble><artwork>
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "review": {
         "objectType": "HttpActionHandler",
@@ -662,6 +731,56 @@
       
     </section>  
     
+    <section anchor="typedPayload" title="Typed Payload Objects">
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Required</ttcol>
+        <ttcol>Description</ttcol>
+        <c>mediaType</c>
+        <c>MIME Media Type</c>
+        <c>Yes</c>
+        <c>The MIME Media Type of the Payload</c>
+        <c>type</c>
+        <c><xref target="I-D.snell-activitystreams">Type Value</xref></c>
+        <c>No</c>
+        <c>
+          An optional Type Value that describes the payloads semantic type.
+        </c>
+        <c>schema</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>No</c>
+        <c>
+          An optional Link Value whose value(s) describe the structure of the
+          payload data. The value is represented either as a String with 
+          a fully qualified IRI, an Activity Stream object, or an Array of 
+          IRIs and Objects. If multiple values are provided, they are to be
+          considered mutually exclusive alternatives. 
+        </c>
+      </texttable>
+      
+      <figure><preamble>For example:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "TypedPayload",
+          "mediaType": "text/json",
+        }
+      }
+    }
+  }
+      </artwork></figure>
+      
+    </section> 
+    
     <section anchor="urltemplate" title="URL Template Objects">
       
       <t>
@@ -687,7 +806,8 @@
       <figure><artwork>
 {
   "objectType": "note",
-  ...,
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
   "actions": {
     "review": {
       "objectType": "UrlTemplate",
@@ -746,6 +866,7 @@
     "parameters": {
       "foo": "http://example.org/FooProperty",
       "bar": {
+        "objectType": "parameter",
         "id": "http://example.org/BarProperty",
         "displayName": "Bar",
         "required": False
@@ -753,6 +874,294 @@
     }
   }
       </artwork></figure>
+      
+      <t>
+        This specification defines a <xref target="ParameterObject">Parameter 
+        objectType</xref> specifically designed to describe parameters.
+      </t>
+      
+      <t>
+        Implementations that encounter unrecognized or unexpected objectTypes
+        used to describe parameters will likely be unable to successfully 
+        comprehend the parameter and may, therefore, be unable to carry out
+        an Action.
+      </t>
+    
+    <section anchor="ParameterObject" title="Parameter Object">
+      
+      <t>
+        The "parameter" objectType is specifically intended for use with the 
+        <xref target="parameters">Parameters</xref> object. Each Parameter 
+        object provides a rich description of a single parameter.
+      </t>
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Required</ttcol>
+        <ttcol>Description</ttcol>
+        <c>required</c>
+        <c>boolean</c>
+        <c>No</c>
+        <c>True if the parameter is required. Defaults to true.</c>
+        <c>repeated</c>
+        <c>boolean</c>
+        <c>No</c>
+        <c>True if the parameter can be repeated zero or more times.</c> 
+        <c>value</c>
+        <c>(Any)</c>
+        <c>No</c>
+        <c>
+          Provides a fixed value for the parameter. When specified, 
+          implementations MUST use the specified value.
+        </c>
+        <c>default</c>
+        <c>(Any)</c>
+        <c>No</c>
+        <c>
+          Provides a default value for the parameter. When specified,
+          implementations MUST use the specified value if no other
+          value is not supplied.
+        </c>
+        <c>enum</c>
+        <c>Array of (Any)</c>
+        <c>No</c>
+        <c>
+          Provides a fixed array of possible values for the parameter. 
+          When specified, implementations MUST use one of the specified 
+          values.
+        </c>
+        <c>maximum</c>
+        <c>(Any)</c>
+        <c>No</c>
+        <c>
+          A value that is considered to be the upper bound of a range of 
+          possible values. This would typically be used only with numeric
+          parameters.
+        </c>
+        <c>minimum</c>
+        <c>(Any)</c>
+        <c>No</c>
+        <c>
+          A value that is considered to be the lower bound of a range of
+          possible values. This would typically be used only with numeric
+          parameters.
+        </c>
+        <c>step</c>
+        <c>Non-negative Number</c>
+        <c>No</c>
+        <c>
+          Specifies the legal numeric interval between acceptable values 
+          for the parameter. The step value MUST be a number and MUST 
+          conform to the given format if a format is specified. For instance,
+          if format is "uint32", then step=2 would indicate legal values of
+          0, 2, 4, 6, and so on. The step property MAY be ignored if it's 
+          value does not correspond to the expected format.
+        </c>
+        <c>format</c>
+        <c>String</c>
+        <c>No</c>
+        <c>
+          A string that describes the format of the value. The format 
+          can be one of the list of standard formats listed below or any
+          other string. If an implementation encounters a format string it
+          does not recognize, the format property MAY be ignored. When not 
+          specified, the value format is assumed to be a sequence of UTF-8
+          encoded codepoints.
+        </c>
+        <c>pattern</c>
+        <c>String</c>
+        <c>No</c>
+        <c>
+          A Regular Expression that describes the structure of the value. 
+          Typically used when the value is a string.
+        </c>
+        <c>placeholder</c>
+        <c><xref target="I-D.snell-activitystreams">Natural Language Value</xref></c>
+        <c>No</c>
+        <c>
+          An optional Natural Language Value providing a text hint that 
+          describes the expected value of the parameter.
+        </c>
+      </texttable>  
+      
+      <t>
+        The following common format strings MAY be used as values for the 
+        "format" property:
+        <list style="symbols">
+          <t>"boolean" - Specifies that the value is either a string 
+            specifying "true" or "false", a boolean True or False, or an
+            integer where 0 represents False and any other value represents
+            True.</t>
+          <t>
+            "byte" - Specifies that the value is a "URL and filename safe" 
+            Base64-encoded string of bytes as defined by <xref target="RFC4648" />.
+          </t>
+          <t>
+            "hex" - Specifies that the value is a String containing a sequence 
+            of Hex-encoded bytes.
+          </t>
+          <t>
+            "date" - Specifies that the value is a "full-date" (YYYY-MM-DD) 
+            as defined by <xref target="RFC3339"/>.
+          </t>
+          <t>
+            "date-time" - Specifies that the value is a "date-time" as 
+            defined by <xref target="RFC3339"/>.
+          </t>
+          <t>"double" - Specifies that the value is a double-precision 64-bit 
+            IEEE 754 floating point value.</t>
+          <t>"duration" - Specifies that the value is a "duration" as 
+            defined by <xref target="RFC3339"/>.</t>
+          <t>"float" - Specifies that the value is a single-precision 32-bit 
+            IEEE 754 floating point.</t>
+          <t>"int32" - Specifies that the value is a signed, 32-bit integer
+            in the range -2,147,483,648 to 2,147,483,647 (inclusive).</t>
+          <t>"int64" - Specifies that the value is a signed, 64-bit integer
+            in the range -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 
+            (inclusive).</t>
+          <t>"uint32" - Specifies that the value is an unsigned 32-bit integer 
+            in the range 0 to 4,294,967,295 (inclusive).</t>
+          <t>"uint64" - Specifies that the value is an unsigned 64-bit integer
+            in the range 0 to (2^64)-1 (inclusive)</t>
+          <t>"lang" - Specifies that the value is a Language Tag as defined by
+            <xref target="RFC5646" />.</t>
+          <t>"uri" - Specifies that the value is a string containing a URI 
+            as defined by <xref target="RFC3986" />.</t>
+          <t>"iri" - Specifies that the value is a string containing an IRI
+            as defined by <xref target="RFC3987" />.</t>
+        </list>
+      </t>
+      
+      <figure><preamble>Using the Parameter Object in HtmlForm objects:</preamble><artwork>
+  {
+    "objectType": "HtmlForm",
+    "mediaType": "application/x-www-form-urlencoded",
+    "parameters": {
+      "foo": "http://example.org/FooProperty",
+      "bar": {
+        "objectType": "parameter",
+        "id": "http://example.org/BarProperty",
+        "displayName": "Bar",
+        "required": False,
+        "repeated": False,
+        "format": "uint32",
+        "defaultValue": 3,
+        "minimum": 1,
+        "maximum": 5
+      }
+    }
+  }
+      </artwork></figure>
+    </section>
+    
+      <section anchor="urltemplateparameters" title="Using UrlTemplate and TypedPayload objects as parameter descriptions">
+        
+        <t>
+          In certain cases, when the value of a parameter is expected to be 
+          either a URI or IRI, the <xref target="urltemplate">UrlTemplate 
+          objectType</xref> MAY be used as the parameter description. In 
+          such cases, the "required", "repeated", "default"
+          and "placeholder" properties from the <xref target="ParameterObject">
+          Parameter objectType</xref> can be used as additional properties 
+          within the UrlTemplate object. 
+        </t>
+        
+        <t>
+          For example:
+        </t>
+        
+        <figure><artwork>
+          {
+            "objectType": "HtmlForm",
+            "mediaType": "application/x-www-form-urlencoded",
+            "parameters": {
+              "foo": "http://example.org/FooProperty",
+              "bar": {
+                "objectType": "UrlTemplate",
+                "id": "http://example.org/BarProperty",
+                "template": "http://example.org{/foo}",
+                "parameters": {
+                  "foo": "http://example.org/#string"
+                },
+                "displayName": "Bar",
+                "required": False,
+                "repeated": False
+              }
+            }
+          }
+        </artwork></figure>
+        
+        <t>
+          Likewise, when the value of a parameter is expected to be an instance
+          of a specific MIME media type, the <xref target="typedPayload">TypedPayload 
+          objectType</xref> can be used.
+        </t>
+        
+        <figure><artwork>
+          {
+            "objectType": "HtmlForm",
+            "mediaType": "multipart/form-data",
+            "parameters": {
+              "file": {
+                "objectType": "TypedPayload",
+                "mediaType": "image/*",
+                "required": True,
+                "repeated": True
+              }
+            }
+          }
+        </artwork></figure>
+        
+      </section>
+      
+    </section>
+    
+    <section anchor="authentication" title="Authentication Object">
+      
+      <t>
+        An Authentication Object is used by Action Handlers that require
+        specific authentication options to be supported in order to carry
+        out the Action. The object is expresed as a JSON dictionary mapping
+        authentication schema labels to JSON dictionaries that provide
+        a specific description of properties and requirements specific to 
+        the scheme.
+      </t>
+      
+      <figure><preamble>Example Authentication details:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note",
+    "actions": {
+      "view": {
+        "objectType": "HttpActionHandler",
+        "method": "GET",
+        "url": "http://example.org/notes/1",
+        "auth": {
+          "basic": {
+            "realm": "http://example.org"
+          },
+          "oauth": {
+            "scopes": [
+              "some.oauth.scope",
+              "another.oauth.scope"
+            ]
+          }
+        }
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        This specification does not define the authentication schemes
+        or their associated properties. Unrecognized authentication 
+        schemes MAY be ignored. However, if an implementation fails to 
+        recognize any of the authentication schemes specified by an 
+        Action Handler, it might not be possible to successfully
+        carry out the Action.
+      </t>
       
     </section>
     
@@ -771,7 +1180,8 @@
       <figure><preamble>Example style hints:</preamble><artwork>
 {
   "objectType": "note",
-  ...,
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
   "actions": {
     "view": {
       "objectType": "EmbedActionHandler",
@@ -790,7 +1200,8 @@
       <figure><preamble>Multiple style hints for specific media query targets:</preamble><artwork>
 {
   "objectType": "note",
-  ...,
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
   "actions": {
     "view": {
       "objectType": "EmbedActionHandler",
@@ -831,6 +1242,11 @@
     <references title="Normative References">      
       &rfc2119;
       &rfc6570;
+      &rfc3339;
+      &rfc4648;
+      &rfc3986;
+      &rfc3987;
+      &rfc5646;
       &as2;      
     </references>
     
@@ -848,7 +1264,8 @@
         <figure><artwork>
   {
     "objectType": "video",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "watch": [
         {
@@ -874,7 +1291,8 @@
         <figure><artwork>      
   {
     "objectType": "note",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "review": {
         "objectType": "http://schema.org/ReviewAction",
@@ -911,7 +1329,8 @@
         <figure><artwork>
   {
     "objectType": "video",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "watch": [
         {
@@ -937,7 +1356,8 @@
   {
     "objectType": "video",
     "displayName": "A Movie!",
-    ...,
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
     "actions": {
       "watch": [
         {
@@ -1014,8 +1434,9 @@
           "parameters": {
             "rating": {
               "id": "http://schema.org/ratingValue",
-              "bestRating": 5,
-              "worstRating": 0,
+              "maximum": 5,
+              "minimum": 0,
+              "format": "uint32",
               "displayName": "Rating",
               "required": true
             },
