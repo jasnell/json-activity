@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta charset="UTF-8">
+  <title>Activity Streams 2.0</title>
+
+  <style type="text/css" title="Xml2Rfc tables (sans serif)">
+      pre {
+          margin-left: 3em;
+          background-color: lightyellow;
+          padding: .25em;
+      }
+      pre.text2 {
+          border-style: dotted;
+          border-width: 1px;
+          background-color: #f0f0f0;
+          width: 69em;
+      }
+      pre.inline {
+          background-color: white;
+          padding: 0em;
+      }
+      pre.text {
+          border-style: dotted;
+          border-width: 1px;
+          background-color: #f8f8f8;
+          width: 69em;
+      }
+      pre.drawing {
+          border-style: solid;
+          border-width: 1px;
+          background-color: #f8f8f8;
+          padding: 2em;
+      }
+      table {
+          margin-left: 2em;
+      }
+      table.tt {
+          vertical-align: top;
+      }
+      table.full {
+          border-style: outset;
+          border-width: 1px;
+      }
+      table.headers {
+          border-style: outset;
+          border-width: 1px;
+      }
+      table.tt td {
+          vertical-align: top;
+      }
+      table.full td {
+          border-style: inset;
+          border-width: 1px;
+      }
+      table.tt th {
+          vertical-align: top;
+      }
+      table.full th {
+          border-style: inset;
+          border-width: 1px;
+      }
+      table.headers th {
+          border-style: none none inset none;
+          border-width: 1px;
+      }
+      table.left {
+          margin-right: auto;
+      }
+      table.right {
+          margin-left: auto;
+      }
+      table.center {
+          margin-left: auto;
+          margin-right: auto;
+      }
+      td {
+         padding: 3px;
+      }
+      td.top {
+          vertical-align: top;
+      }
+      td.topnowrap {
+          vertical-align: top;
+          white-space: nowrap;
+      }
+      td.header {
+          background-color: gray;
+          width: 50%;
+      }
+      td.reference {
+          vertical-align: top;
+          white-space: nowrap;
+          padding-right: 1em;
+      }
+      thead {
+          display:table-header-group;
+      }
+  </style>
+  
+  <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-Member-SUBM"/>
+
+  <link href="#rfc.toc" rel="Contents"/>
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
+<link href="#rfc.section.1.1" rel="Chapter" title="1.1 Relationship to JSON Activity Streams 1.0"/>
+<link href="#rfc.section.1.2" rel="Chapter" title="1.2 Relationship to JSON-LD 1.0"/>
+<link href="#rfc.section.1.3" rel="Chapter" title="1.3 Syntax Conventions"/>
+<link href="#rfc.section.2" rel="Chapter" title="2 Example Activities"/>
+<link href="#rfc.section.2.1" rel="Chapter" title="2.1 Example 1: Minimal Activity"/>
+<link href="#rfc.section.2.2" rel="Chapter" title="2.2 Example 2: Basic activity with some additional detail"/>
+<link href="#rfc.section.2.3" rel="Chapter" title="2.3 Example 3: An extended activity"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 Object Model"/>
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 Object"/>
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 Natural Language Values"/>
+<link href="#rfc.section.3.3" rel="Chapter" title="3.3 Type Values"/>
+<link href="#rfc.section.3.4" rel="Chapter" title="3.4 Link Values"/>
+<link href="#rfc.section.3.5" rel="Chapter" title="3.5 Activity"/>
+<link href="#rfc.section.3.5.1" rel="Chapter" title="3.5.1 Considerations on the use of &quot;priority&quot;"/>
+<link href="#rfc.section.3.5.2" rel="Chapter" title="3.5.2 Audience Targeting Properties"/>
+<link href="#rfc.section.3.6" rel="Chapter" title="3.6 Additional Object Properties"/>
+<link href="#rfc.section.3.6.1" rel="Chapter" title="3.6.1 Action Values"/>
+<link href="#rfc.section.3.7" rel="Chapter" title="3.7 Collection"/>
+<link href="#rfc.section.3.7.1" rel="Chapter" title="3.7.1 Using Collections as Summary Values"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 The Activity Stream JSON Document"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Reserved Object Types and Verbs"/>
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Object Types"/>
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Verbs"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Deprecated Activity Streams 1.0 Syntax"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 Comparison of Identifier Values"/>
+<link href="#rfc.section.8" rel="Chapter" title="8 Extensibility"/>
+<link href="#rfc.section.9" rel="Chapter" title="9 Security Considerations"/>
+<link href="#rfc.section.10" rel="Chapter" title="10 IANA Considerations"/>
+<link href="#rfc.section.10.1" rel="Chapter" title="10.1 application/activity+xml Media Type"/>
+<link href="#rfc.references" rel="Chapter" title="11 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="11.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="11.2 Informational References"/>
+<link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements"/>
+<link href="#rfc.appendix.B" rel="Chapter" title="B Processing as JSON-LD"/>
+<link href="#rfc.appendix.C" rel="Chapter" title="C Motivational Use Cases"/>
+<link href="#rfc.appendix.C.1" rel="Chapter" title="C.1 Internationalization (i18n)"/>
+<link href="#rfc.appendix.C.2" rel="Chapter" title="C.2 Extensibility (e11y)"/>
+<link href="#rfc.appendix.C.2.1" rel="Chapter" title="C.2.1 Publishing Extension objectType and verb Libraries"/>
+<link href="#rfc.appendix.C.3" rel="Chapter" title="C.3 First Class Links"/>
+<link href="#rfc.appendix.C.4" rel="Chapter" title="C.4 Use of External Vocabularies"/>
+<link href="#rfc.appendix.C.5" rel="Chapter" title="C.5 Embedded Actions"/>
+<link href="#rfc.authors" rel="Chapter"/>
+  <meta name="dct.creator" content="Snell, J., Ed." />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-snell-activitystreams-05" />
+  <meta name="dct.issued" scheme="ISO8601" content="2013-11" />
+  <meta name="dct.abstract" content="This specification details a model for representing potential and completed activities using the JSON format.  " />
+  <meta name="description" content="This specification details a model for representing potential and completed activities using the JSON format.  " />
+</head>
+
+<body>
+
+  <div class="head">
+    <p>
+      <a href="http://www.w3.org/">
+        <img alt="W3C" height="48" src="http://www.w3.org/Icons/w3c_home" width="72">
+      </a>
+      <a href="http://www.w3.org/Submission/">
+        <img height="48" width="211" src="http://www.w3.org/Icons/member_subm" alt="W3C Member Submission">
+      </a>
+    </p>
+    <h1 style="clear:both" id="title">
+      Activity Streams 2.0
+    </h1>
+    <h2 id="W3C-doctype">
+      W3C Member Submission 20 February 2014
+    </h2>
+
+    <dl>
+      <dt>This version:</dt>
+      <dd>
+        <a href="http://www.w3.org/Submission/2014/SUBM-osapi-20140130/">
+          http://www.w3.org/Submission/2014/SUBM-osapi-20140130/
+        </a>
+      </dd>
+      <dt>Latest version:</dt>
+      <dd>
+        <a href="http://www.w3.org/Submission/SUBM-osapi-20140130/">
+          http://www.w3.org/Submission/SUBM-osapi-20140130/
+        </a>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Author:</dt>
+      <dd>James M Snell (IBM)</dd>
+    </dl>
+
+    <p class="copyright">Copyright © 2014 http://activitystrea.ms. This document 
+      is available under the <a href="http://www.w3.org/Consortium/Legal/copyright-documents">W3C Document
+      License</a>. See the <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">W3C
+      Intellectual Rights Notice and Legal Disclaimers</a> for additional
+      information.
+    </p>
+    <hr>
+  </div>
+
+  <h1 id="rfc.abstract">
+  <h2 href="#rfc.abstract">Abstract</h2>
+</h1>
+<p>
+  This specification details a model for representing potential and completed 
+  activities using the JSON format.  
+</p>
+<h3>Author's Note</h3>
+<p>
+  This draft is heavily influenced by the original JSON Activity Streams 1.0 
+  specification that was originally co-authored by Martin Atkins, Will Norris, 
+  Chris Messina, Monica Wilkinson, Rob Dolin and James Snell. The author is 
+  very thankful for their significant contributions and gladly stands on their 
+  shoulders.  Some portions of the original text of Activity Streams 1.0 are 
+  used in this document.  
+</p>
+<p>
+  The Activity Streams 1.0 and 2.0 specifications are works originally produced 
+  by the Activity Streams Working Group (http://activitystrea.ms/).
+</p>
+
+<h2 id="status">Status of this document</h2>
+
+<p><em>
+  This section describes the status of this document at the time of its 
+  publication. Other documents may supersede this document. A list of 
+  current W3C publications can be found in the 
+  <a href="http://www.w3.org/TR/">W3C technical reports index</a> at 
+  http://www.w3.org/TR/.</em>
+</p>
+
+<p>
+  By publishing this document, W3C acknowledges that the 
+  <a href="http://www.w3.org/Submission/@@@submissiondoc@@@">Submitting Members</a>
+  have made a formal Submission request to W3C for discussion.
+  Publication of this document by W3C indicates no endorsement of its
+  content by W3C, nor that W3C has, is, or will be allocating any
+  resources to the issues addressed by it. This document is not the
+  product of a chartered W3C group, but is published as potential input
+  to the <a href="http://www.w3.org/Consortium/Process">W3C Process</a>.
+  A <a href="http://www.w3.org/Submission/@@@teamcomment@@@">W3C Team Comment</a> 
+  has been published in conjunction with this Member Submission.
+  Publication of acknowledged Member Submissions at the W3C site is one
+  of the benefits of <a href="http://www.w3.org/Consortium/Prospectus/Joining">W3C
+  Membership</a>. Please consult the requirements associated with
+  Member Submissions of <a href="http://www.w3.org/Consortium/Patent-Policy-20030520.html#sec-submissions">section
+  3.3 of the W3C Patent Policy</a>. Please consult the complete
+  <a href="http://www.w3.org/Submission">list of acknowledged W3C Member
+  Submissions</a>.
+</p>
+
+  <h2 class="np" id="rfc.toc">Table of Contents</h2>
+  <ul class="toc">
+
+<li>1.   <a href="#rfc.section.1">Introduction</a></li>
+<li>1.1.   <a href="#rfc.section.1.1">Relationship to JSON Activity Streams 1.0</a></li>
+<li>1.2.   <a href="#rfc.section.1.2">Relationship to JSON-LD 1.0</a></li>
+<li>1.3.   <a href="#rfc.section.1.3">Syntax Conventions</a></li>
+<li>2.   <a href="#rfc.section.2">Example Activities</a></li>
+<li>2.1.   <a href="#rfc.section.2.1">Example 1: Minimal Activity</a></li>
+<li>2.2.   <a href="#rfc.section.2.2">Example 2: Basic activity with some additional detail</a></li>
+<li>2.3.   <a href="#rfc.section.2.3">Example 3: An extended activity</a></li>
+<li>3.   <a href="#rfc.section.3">Object Model</a></li>
+<li>3.1.   <a href="#rfc.section.3.1">Object</a></li>
+<li>3.2.   <a href="#rfc.section.3.2">Natural Language Values</a></li>
+<li>3.3.   <a href="#rfc.section.3.3">Type Values</a></li>
+<li>3.4.   <a href="#rfc.section.3.4">Link Values</a></li>
+<li>3.5.   <a href="#rfc.section.3.5">Activity</a></li>
+<li>3.5.1.   <a href="#rfc.section.3.5.1">Considerations on the use of "priority"</a></li>
+<li>3.5.2.   <a href="#rfc.section.3.5.2">Audience Targeting Properties</a></li>
+<li>3.6.   <a href="#rfc.section.3.6">Additional Object Properties</a></li>
+<li>3.6.1.   <a href="#rfc.section.3.6.1">Action Values</a></li>
+<li>3.7.   <a href="#rfc.section.3.7">Collection</a></li>
+<li>3.7.1.   <a href="#rfc.section.3.7.1">Using Collections as Summary Values</a></li>
+<li>4.   <a href="#rfc.section.4">The Activity Stream JSON Document</a></li>
+<li>5.   <a href="#rfc.section.5">Reserved Object Types and Verbs</a></li>
+<li>5.1.   <a href="#rfc.section.5.1">Object Types</a></li>
+<li>5.2.   <a href="#rfc.section.5.2">Verbs</a></li>
+<li>6.   <a href="#rfc.section.6">Deprecated Activity Streams 1.0 Syntax</a></li>
+<li>7.   <a href="#rfc.section.7">Comparison of Identifier Values</a></li>
+<li>8.   <a href="#rfc.section.8">Extensibility</a></li>
+<li>9.   <a href="#rfc.section.9">Security Considerations</a></li>
+<li>10.   <a href="#rfc.section.10">IANA Considerations</a></li>
+<li>10.1.   <a href="#rfc.section.10.1">application/activity+xml Media Type</a></li>
+<li>11.   <a href="#rfc.references">References</a></li>
+<li>11.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>11.2.   <a href="#rfc.references.2">Informational References</a></li>
+<li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a></li>
+<li>Appendix B.   <a href="#rfc.appendix.B">Processing as JSON-LD</a></li>
+<li>Appendix C.   <a href="#rfc.appendix.C">Motivational Use Cases</a></li>
+<li>C.1.   <a href="#rfc.appendix.C.1">Internationalization (i18n)</a></li>
+<li>C.2.   <a href="#rfc.appendix.C.2">Extensibility (e11y)</a></li>
+<li>C.2.1.   <a href="#rfc.appendix.C.2.1">Publishing Extension objectType and verb Libraries</a></li>
+<li>C.3.   <a href="#rfc.appendix.C.3">First Class Links</a></li>
+<li>C.4.   <a href="#rfc.appendix.C.4">Use of External Vocabularies</a></li>
+<li>C.5.   <a href="#rfc.appendix.C.5">Embedded Actions</a></li>
+<li><a href="#rfc.authors">Author's Address</a></li>
+
+
+  </ul>
+
+<h2 id="rfc.section.1">1. Introduction</h2>
+<p id="rfc.section.1.p.1">
+  In the most basic sense, an "activity" is a semantic description of 
+  potential or completed actions. In the former case, the activity expresses 
+  what can be done with a particular object, while in the latter case, it 
+  expresses what has already been done.  
+</p>
+<p id="rfc.section.1.p.2">
+  It is the goal of this specification to provide a JSON-based syntax that 
+  is sufficient to express metadata about activities in a rich, human-friendly, 
+  machine-processable and extensible manner. This may include constructing 
+  natural-language descriptions or visual representations about the activity, 
+  associating actionable information with various types of objects, 
+  communicating or recording activity logs, or delegation of potential actions 
+  to other applications.  
+</p>
+<p id="rfc.section.1.p.3">
+  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", 
+  "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be 
+  interpreted as described in <a href="#RFC2119">[RFC2119]</a>.  
+</p>
+
+<h3 id="rfc.section.1.1">1.1. Relationship to JSON Activity Streams 1.0</h3>
+<p id="rfc.section.1.1.p.1">
+  The <a href="#activitystreams-1.0">JSON Activity Streams 1.0</a> 
+  specification was published 
+  in May of 2011 and provided a baseline extensible syntax for the expression 
+  of completed activities. This specification builds upon that initial 
+  foundation by incorporating lessons learned through extensive implementation, 
+  community feedback and related work being performed in other standards 
+  development communities.  
+</p>
+<p id="rfc.section.1.1.p.2">
+  While the syntax defined by this specification diverges somewhat from that 
+  defined by JSON Activity Streams 1.0, the verbs, objectTypes, extensions and 
+  fundamental model defined by that original specification remain intact.  
+</p>
+<p id="rfc.section.1.1.p.3">
+  Refer to <a href="#deprecated-syntax">Section 6</a> for more detail about 
+  the differences between the 1.0 and 2.0 syntax and for a listing of specific 
+  backwards compatibility requirements.  
+</p>
+<p id="rfc.section.1.1.p.4">
+  This specification incorporates several existing extensions to the 1.0 syntax 
+  directly into the 2.0 model. These include portions of the 
+  <a href="#base-schema">Activity Streams 1.0 Base Schema</a> 
+  , <a href="#audience">Audience 
+  Targeting</a> , 
+  <a href="#responses">Responses</a> , 
+  and <a href="#priority">Priority</a> 
+  extensions. 
+</p>
+
+<h3 id="rfc.section.1.2">1.2. Relationship to JSON-LD 1.0</h3>
+
+<p id="rfc.section.1.2.p.1">
+  The <a href="#W3C.WD-json-ld-20130411">JSON-based Serialization for Linked 
+  Data (JSON-LD)</a> 
+  describes a rich syntax for the serialization of semantically-rich metadata 
+  using the JSON format.  While the updated Activity Streams representation 
+  provided by this document is not defined as a "JSON-LD Vocabulary", the 
+  syntax is designed to be closely compatible with JSON-LD.  
+</p>
+<p id="rfc.section.1.2.p.2">
+  There are a few differences between JSON-LD and the serialization syntax 
+  described here, specifically: 
+</p>
+
+<ul>
+  <li>
+    JSON-LD uses certain field names with a leading "@" character, such as 
+    "@id" and "@language". In this specification, the leading "@" is omitted.  
+  </li>
+  <li>
+    While JSON-LD allows using relative IRI references in the values of "id" 
+    properties, this specification limits identifiers to absolute IRIs. 
+  </li>
+  <li>
+    While it is possible to derive a JSON-LD "@context" description for the 
+    Activity Streams 2.0 JSON syntax one is not normatively provided by this 
+    specification.  
+  </li>
+</ul>
+
+<p id="rfc.section.1.2.p.3">
+  When processing an Activity Streams document as JSON-LD, the following 
+  rules apply: 
+</p>
+
+<ul>
+  <li>The "objectType" property MUST be treated as an alias of JSON-LD "@type".  </li>
+  <li>The "id" property MUST be treated as an alias of JSON-LD "@id".  </li>
+  <li>The "language" property MUST be treated as an alias of JSON-LD "@language".  </li>
+  <li>A JSON array used to convey <a href="#link">Link</a> values MUST be treated as an unordered JSON-LD @set (@container = @set).  </li>
+  <li>The JSON array value for the "items" property defined in <a href="#collection">Section 3.7</a> MUST be treated as an ordered JSON-LD @list (@container = @list).  </li>
+  <li>The "displayName", "title", "content" and "summary" properties defined in <a href="#object">Section 3.1</a> and <a href="#object-ext">Section 3.6</a> MUST be treated as JSON-LD Language Maps (@container = @language).  </li>
+</ul>
+
+<h3 id="rfc.section.1.3">1.3. Syntax Conventions</h3>
+  
+<p id="rfc.section.1.3.p.1">
+  This specification defines a <a href="#RFC4627">JSON-based</a> 
+  serialization syntax.  
+</p>
+<p id="rfc.section.1.3.p.2">
+  When serialized, absent properties are represented by either (a) setting the 
+  property value to null, or (b) by omitting the property declaration altogether 
+  at the option of the publisher; these representations are semantically 
+  equivalent. If a property has an array value, the absence of any items in 
+  that array MUST be represented by omitting the property entirely or by 
+  setting the value to null. 
+</p>
+<p id="rfc.section.1.3.p.3">
+  This specification uses IRIs <a href="#RFC3987">[RFC3987]</a>.  Every URI 
+  <a href="#RFC3986">[RFC3986]</a> is also an IRI, so a URI may be used wherever 
+  an IRI is named.  There are two special considerations: (1) when an IRI that 
+  is not also a URI is given for dereferencing, it MUST be mapped to a URI 
+  using the steps in Section 3.1 of <a href="#RFC3987">[RFC3987]</a> and 
+  (2) when an IRI is serving as an "id" value, it MUST NOT be so mapped.  
+</p>
+<p id="rfc.section.1.3.p.4">
+  Unless otherwise specified, all properties with date and time values MUST 
+  conform to the "date-time" production in <a href="#RFC3339">[RFC3339]</a>, 
+  with an uppercase "T" character used to separate date and time, and an 
+  uppercase "Z" character in the absence of a numeric time zone offset. All 
+  such timestamps SHOULD be represented relative to Coordinated Universal 
+  Time (UTC).  
+</p>
+
+
+
+<h2 id="rfc.section.2">2. Example Activities</h2>
+
+<p id="rfc.section.2.p.1">Following are three examples of activities with varying degrees of detail.  </p>
+<h3 id="rfc.section.2.1">2.1. Example 1: Minimal Activity</h3>
+<p id="rfc.section.2.1.p.1">Expresses the statement "'urn:example:person:martin' posted 'http://example.org/foo.jpg'". No additional detail is given.  </p>
+<pre>
+{
+  "verb": "post",
+  "actor": "urn:example:person:martin",
+  "object": "http://example.org/foo.jpg"
+}
+</pre>
+          
+  <h3 id="rfc.section.2.2">2.2. Example 2: Basic activity with some additional detail</h3>
+<p id="rfc.section.2.2.p.1">Expresses the statement "Martin Smith posted an article to the blog 'Martin's Blog' at 3:04 PM GMT on February 2, 2011." Some additional details about the article, actor and target blog are given.</p>
+<pre>
+  {
+    "verb": "post",
+    "published": "2011-02-10T15:04:55Z",
+    "language": "en",
+    "actor": {
+      "objectType": "person",
+      "id": "urn:example:person:martin",
+      "displayName": "Martin Smith",
+      "url": "http://example.org/martin",
+      "image": {
+        "url": "http://example.org/martin/image.jpg",
+        "mediaType": "image/jpeg",
+        "width": 250,
+        "height": 250
+      }
+    },
+    "object" : {
+      "objectType": "article",
+      "id": "urn:example:blog:abc123/xyz"
+      "url": "http://example.org/blog/2011/02/entry",
+      "displayName": "Why I love Activity Streams"
+    },
+    "target" : {
+      "objectType": "blog",
+      "id": "urn:example:blog:abc123",
+      "displayName": "Martin's Blog",
+      "url": "http://example.org/blog/"
+    }
+  }
+</pre>
+  <h3 id="rfc.section.2.3">2.3. Example 3: An extended activity</h3>
+<p id="rfc.section.2.3.p.1">A more extensive, single-entry "Activity Stream" follows. In addition to containing a number of required and optional core properties, the example contains the additional, undefined extension properties "foo" and "foo2" for illustrative purposes only.  </p>
+<pre>
+  {
+    "totalItems": 1,
+    "items" : [
+      {
+        "verb": "post",
+        "language": "en",
+        "published": "2011-02-10T15:04:55Z",
+        "foo": "some extension property",
+        "generator": "http://example.org/activities-app",
+        "provider": "http://example.org/activity-stream",
+        "displayName": {
+          "en": "Martin posted a new video to his album.",
+          "ga": "Martin phost le f&#237;se&#225;n nua a albam."
+        },
+        "actor": {
+          "objectType": "person",
+          "id": "urn:example:person:martin",
+          "displayName": "Martin Smith",
+          "url": "http://example.org/martin",
+          "foo2": "some other extension property",
+          "image": {
+            "url": "http://example.org/martin/image",
+            "mediaType": "image/jpeg",
+            "width": 250,
+            "height": 250
+          }
+        },
+        "object" : {
+          "objectType": {
+            "id": "http://example.org/Photo",
+            "displayName": "Photo"
+          },
+          "id": "urn:example:album:abc123/my_fluffy_cat",
+          "url": "http://example.org/album/my_fluffy_cat.jpg",
+          "image": {
+            "url": "http://example.org/album/my_fluffy_cat_thumb.jpg",
+            "mediaType": "image/jpeg",
+            "width": 250,
+            "height": 250
+          }
+        },
+        "target": {
+          "objectType": {
+            "id": "http://example.org/PhotoAlbum",
+            "displayName": "Photo-Album"
+          },
+          "id": "urn:example.org:album:abc123",
+          "url": "http://example.org/album/",
+          "displayName": {
+            "en": "Martin's Photo Album",
+            "ga": "Grianghraif M&#225;irt&#237;n"
+          },
+          "image": {
+            "url": "http://example.org/album/thumbnail.jpg",
+            "mediaType": "image/jpeg",
+            "width": 250,
+            "height": 250
+          }
+        }
+      }
+    ]
+  }
+</pre>
+  <h2 id="rfc.section.3">3. Object Model</h2>
+  <h3 id="rfc.section.3.1"><a id="object"/>3.1. Object</h3>
+<p id="rfc.section.3.1.p.1">The following "core properties" apply to all JSON objects serialized within an Activity Stream document.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">id</td>
+      <td class="left">IRI</td>
+      <td class="left">Provides a permanent, universally unique identifier for the object in the form of an absolute IRI <a href="#RFC3987">[RFC3987]</a>.  Objects SHOULD contain a single "id" property. If an object does not contain an "id" property, consumers MAY use the value of the "url" property as a less-reliable, non-unique identifier.  </td>
+    </tr>
+    <tr>
+      <td class="left">objectType</td>
+      <td class="left"><a href="#type-value">Type value</a> </td>
+      <td class="left">Identifies the type of object. An object MAY contain a "objectType" property whose value is a <a href="#type-value">Type value</a> .  If no "objectType" property is specified, the object has no specific type.  </td>
+    </tr>
+    <tr>
+      <td class="left">language</td>
+      <td class="left"><a href="#RFC5646">[RFC5646]</a> Language Tag</td>
+      <td class="left">Establishes the default language assumed for human-readable, natural-language metadata values included in the object. An object MAY contain a "language" property whose value MUST be a <a href="#RFC5646">[RFC5646]</a> Language-Tag.  </td>
+    </tr>
+    <tr>
+      <td class="left">displayName</td>
+      <td class="left"><a href="#lang">Natural Language value</a> </td>
+      <td class="left">A simple human-readable, plain-text name for the object. HTML markup MUST NOT be included. An object MAY contain a "displayName" property. If the object does not specify a "objectType" property, the object SHOULD specify a "displayName".  </td>
+    </tr>
+    <tr>
+      <td class="left">url</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value describing a resource that provides a representation of the object. An object MAY contain a "url" property.  </td>
+    </tr>
+  </tbody>
+</table>
+  <h3 id="rfc.section.3.2"><a id="lang"/>3.2. Natural Language Values</h3>
+<p id="rfc.section.3.2.p.1">Natural Language values represent human-readable character sequences in one or more languages. They are expressed as either (1) a single JSON string or (2) a JSON dictionary mapping <a href="#RFC5646">[RFC5646]</a> Language-Tags to localized, equivalent translations of the same string value.  </p>
+<p id="rfc.section.3.2.p.2">For instance, the "displayName" property in all objects is a Natural Language value.  </p>
+<p>A single String value using the default language:</p>
+<pre>
+  {
+    "language": "en",
+    "displayName": "This is the title"
+  }
+</pre>
+<p>Multiple, language-specific values:</p>
+<pre>
+  {
+    "displayName": {
+      "en": "This is the title",
+      "fr": "C'est le titre",
+      "sp": "Este es el t&#237;tulo"
+    }
+  }
+</pre>
+<p id="rfc.section.3.2.p.3">Each key in the JSON dictionary MUST be an <a href="#RFC5646">[RFC5646]</a> Language Tag. The associated values MUST be Strings.  </p>
+  <h3 id="rfc.section.3.3"><a id="type-value"/>3.3. Type Values</h3>
+<p id="rfc.section.3.3.p.1">Type values represent references to or descriptions of an abstract type. They are expressed as either: (1) a String conforming to either the "isegment-nz-nc" or "IRI" productions in <a href="#RFC3987">[RFC3987]</a> or (2) an <a href="#object">Object</a> .  When represented as a String, the use of relative references other than a simple name is not allowed. When represented as an Object, the "id" property MUST be specified.  </p>
+<p id="rfc.section.3.3.p.2">Within the Activity Streams 2.0, Type values are used only by the "objectType" and "verb" properties.  </p>
+<p>Object type as a simple name (isegment-nz-nc):</p>
+<pre>
+  {
+    "objectType": "person",
+    "displayName": "John"
+  }
+</pre>
+<p>Object type as an absolute IRI:</p>
+<pre>
+  {
+    "objectType": "http://example.org/Person",
+    "displayName": "John"
+  }
+</pre>
+<p>Object type as an object:</p>
+<pre>
+  {
+    "objectType": {
+      "id": "http://example.org/Person",
+      "displayName": "Person"
+    },
+    "displayName": "John"
+  }
+</pre>
+<p id="rfc.section.3.3.p.3">Because the second and third examples above each specify "http://example.org/Person", the two examples are considered to specify the same type.  </p>
+<p>Verb as a simple name (isegment-nz-nc):</p>
+<pre>
+  {
+    "verb": "post",
+    "actor": "acct:john.doe@example.org",
+    "object": "http://example.org/123"
+  }
+</pre>
+<p>Verb as an absolute IRI:</p>
+<pre>
+  {
+    "verb": "http://example.com/Upload",
+    "actor": "acct:john.doe@example.org",
+    "object": "http://example.org/123"
+  }
+</pre>
+<p>Verb as an object:</p>
+<pre>
+  {
+    "verb": {
+      "id": "http://example.com/Upload",
+      "displayName": "Upload"
+    },
+    "actor": "acct:john.doe@example.org",
+    "object": "http://example.org/123"
+  }
+</pre>
+<p id="rfc.section.3.3.p.4">Allowing verbs and object types to be represented as objects rather than simple names or IRIs is intended to simplify the use of extensions that an implementation might not have encountered previously. The object properties provide additional information and metadata about the new verb or object type.  </p>
+<p id="rfc.section.3.3.p.5">It is important to note that because the "id" property is strictly limited to absolute IRI values, the object representation cannot be used to describe types with simple names.  </p>
+  <h3 id="rfc.section.3.4"><a id="link"/>3.4. Link Values</h3>
+<p id="rfc.section.3.4.p.1">Link values represent references to other objects and resources.  They are expressed as either: (1) a String containing an absolute or relative IRI, (2) an <a href="#object">Object</a> , or (3) a JSON Array containing a mixture of IRIs or <a href="#object">Objects</a> . Link values are closely related to the conceptual model of Links as established in <a href="#RFC5988">[RFC5988]</a>.  </p>
+<p id="rfc.section.3.4.p.2">For example, as defined previously, all <a href="#object">objects</a> can contain an "image" property whose value describes a graphical representation of the containing object. This property will typically be used to provide the URL to a JPEG, GIF or PNG type resource that can be displayed to the user. Any given object might have multiple such visual representations -- multiple screenshots, for instance, or the same image at different resolutions. Using Link values, there are essentially three ways of describing such references.  </p>
+<p>To reference a single image without any additional metadata, the link value can be expressed as a simple JSON string containing an absolute or relative IRI:</p>
+<pre>
+  {
+    "objectType": "application",
+    "id": "http://example.org/application/123",
+    "displayName": "My Application",
+    "image": "http://example.org/application/123.png"
+  }
+</pre>
+<p>Alternatively, if additional metadata is required, the link can be expressed as an object containing the url property.</p>
+<pre>
+  {
+    "objectType": "application",
+    "id": "http://example.org/application/123",
+    "displayName": "My Application",
+    "image": {
+      "url": "http://example.org/application/123.png",
+      "mediaType": "image/png",
+      "height": 320,
+      "width": 320
+    }
+  }
+</pre>
+<p>If more than one link value is to be expressed, A JSON Array with a mix of string and object elements can be used:</p>
+<pre>
+  {
+    "objectType": "application",
+    "id": "http://example.org/application/123",
+    "displayName": "My Application",
+    "image": [
+      "http://example.org/application/abc.gif",
+      {
+        "url": "http://example.org/application/123.png",
+        "mediaType": "image/png",
+        "height": 320,
+        "width": 320
+      }
+    ]
+  }
+</pre>
+<p id="rfc.section.3.4.p.3">Individual items contained in such an array are independent of the others and no significance is given to the ordering of those items.  </p>
+<p id="rfc.section.3.4.p.4">RFC 5988 defines that all Links have a "link relation" that describes the contextual purpose of the link. Within an <a href="#object">object</a> , in the absence of a specific "rel" property within the link object itself, the name of the property whose value is a link serves as the "link relation".  Any valid link relation value, as defined by RFC 5988, can be used as a property with a link value in any Activity Streams object, except where the link relation might conflict with any other property defined by this specification.  </p>
+<p>In the following example, two separate links are provided. The link relation of the first is "image", while the link relation of the second is "preview". Both links, however, can be used as alternative visual representations of the "application" object.</p>
+<pre>
+  {
+    "objectType": "application",
+    "image": [
+      "http://example.org/foo.jpg",
+      {
+        "url": "http://example.org/screens/1.jpg",
+        "rel": "preview",
+        "mediaType": "image/jpeg"
+      }
+    ]
+  }
+</pre>
+<p id="rfc.section.3.4.p.5">When an <a href="#object">object</a> is used to represent a Link value, the following additional properties MAY be used: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">rel</td>
+      <td class="left">RFC 5988 Link Relation</td>
+      <td class="left">The RFC 5988 Link Relation associated with this link value.  If absent, the name of the property is assumed to specify the link relation.  </td>
+    </tr>
+    <tr>
+      <td class="left">mediaType</td>
+      <td class="left">MIME Media Type</td>
+      <td class="left">The MIME media type of the resource being referenced.  </td>
+    </tr>
+  </tbody>
+</table>
+  <h3 id="rfc.section.3.5"><a id="activity"/>3.5. Activity</h3>
+<p id="rfc.section.3.5.p.1">Activity objects are specializations of the base <a href="#object">Object</a> type that provide metadata about potential or completed actions.  </p>
+<p id="rfc.section.3.5.p.2">Within an Activity object, the "verb" property is used to identify the type of activity. All existing verb definitions used in JSON Activity Streams 1.0 implementations can continue to be used and retain their existing semantics. If the "verb" is not specified, the "objectType" property MAY be used as an alternative means of determining the activity type.  </p>
+<p id="rfc.section.3.5.p.3">Activity objects extend the core <a href="#object">object</a> definition with the following additional, optional properties: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">verb</td>
+      <td class="left"><a href="#type-value">Type value</a> </td>
+      <td class="left">Identifies the type of activity. An activity SHOULD contain a "verb" property whose value is a <a href="#type-value">Type value</a> .  If the "verb" property is not specified, the activity MUST contain a "objectType" property.  </td>
+    </tr>
+    <tr>
+      <td class="left">actor</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Describes one or more entities that either peformed or are expected to perform the activity.  </td>
+    </tr>
+    <tr>
+      <td class="left">object</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Describes the primary object of the activity. For instance, in the activity, "John saved a movie to his wishlist", the object of the activity is "movie". An activity SHOULD contain an "object" property. If the "object" property is not contained, the primary object of the activity MAY be implied by context.  </td>
+    </tr>
+    <tr>
+      <td class="left">target</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Describes the target of the activity. The precise meaning of the activity's target is dependent on the activities "verb", but will often be the object the English preposition "to".  For instance, in the activity, "John saved a movie to his wishlist", the target of the activity is "wishlist". The activity target MUST NOT be used to identity an indirect object that is not a target of the activity.  </td>
+    </tr>
+    <tr>
+      <td class="left">result</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Describes the result of the activity. For instance, if a particular action results in the creation of a new resource, the "result" property can be used to describe that new resource.  </td>
+    </tr>
+    <tr>
+      <td class="left">priority</td>
+      <td class="left">Decimal Number between 0.00 and 1.00</td>
+      <td class="left">An indicator of the relative priority or importance that the creator of an activity considers the it to have. Represented as a numeric decimal between 0.00 and 1.00, with two decimal places of precision. If the property is omitted or set to null, the assumption is that a default priority can be assumed. The value 0.00 represents the lowest possible priority while 1.00 represents the highest.  </td>
+    </tr>
+  </tbody>
+</table>
+<h4 id="rfc.section.3.5.1">3.5.1. Considerations on the use of "priority"</h4>
+<p id="rfc.section.3.5.1.p.1">The presence of the "priority" property does not impose any specific processing or display requirements on the part of any entity consuming the activity.  </p>
+<p id="rfc.section.3.5.1.p.2">Expressing the value as a range of numeric decimal values is intended to provide the greatest level of flexibility in the expression and consumption of prioritization detail.  It is expected that implementors consuming activity objects containing "priority" will utilize and expose the additional information in a number of different ways depending on the unique requirements of each application use case.  </p>
+<p id="rfc.section.3.5.1.p.3">Many existing systems do not represent priority values as numeric ranges.  Such systems might use fixed, labeled brackets such as "low", "normal" and "high" or "urgent".  Similar mechanisms can be established, by convention, when using the "priority" property.  In typical use, it is RECOMMENDED that implementations wishing to work with such defined categories treat "priority" property values in the range 0.00 to 0.25 as "low" priority; values greater than 0.25 to 0.75 as "normal" priority; and values greater than 0.75 to 1.00 as "high" priority.  Specific implementations are free to establish alternative conventions for the grouping of priority values with the caveat that such conventions likely will not be understood by all implementations.  </p>
+<h4 id="rfc.section.3.5.2"><a id="audience-targeting"/>3.5.2. Audience Targeting Properties</h4>
+<p id="rfc.section.3.5.2.p.1">Every Activity has both a Primary and Secondary audience. The Primary audience consists of those entities either directly involved in the performance of the activity or who "own" the objects involved. The Secondary audience consists of the collection of entities sharing an interest in the activity but who are not directly involved (e.g. "followers").  </p>
+<p id="rfc.section.3.5.2.p.2">For instance, suppose a social network of three individuals: Bob, Joe and Jane. Bob and Joe are each friends with Jane but not friends with one another. Bob has chosen to "follow" activities for which Jane is directly involved. Jane shares a file with Joe.  </p>
+<p id="rfc.section.3.5.2.p.3">In this example, Jane and Joe are each directly involved in the file sharing activity and together make up the Primary Audience for that event. Bob, having an interest in activities involving Jane, is the Secondary Audience. Knowing this, a system that produces or consumes the activity can intelligently notify each person of the event.  </p>
+<p id="rfc.section.3.5.2.p.4">While there are means, based on the verb, actor, object and target of the activity, to infer the primary audience for many types of activities, those do not work in every case and do not provide a means of identifying the secondary audience. The "to", "cc", "bto" and "bcc" properties MAY be used within an Activity to explicitly identify the Primary and Secondary audiences.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">to</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Specifies the public primary audience.  </td>
+    </tr>
+    <tr>
+      <td class="left">cc</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Specifies the public secondary audience.  </td>
+    </tr>
+    <tr>
+      <td class="left">bto</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Specifies the private primary audience.  </td>
+    </tr>
+    <tr>
+      <td class="left">bcc</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">Specifies the private secondary audience.  </td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.3.5.2.p.5">The prototypical use case for an Activity containing these properties is the publication and redistribution of Activities through an intermediary. That is, an event source generates the activity and publishes it to the intermediary which determines a subset of events to display to specific individual users or groups. Such a determination can be made, in part, by identifying the Primary and Secondary Audiences for each activity.  </p>
+<p id="rfc.section.3.5.2.p.6">When the event source generates the activity and specifies values for the to and cc fields, the intermediary SHOULD redistribute that event with the values of those fields intact, allowing any processor to see who the activity has been targeted to. This is precisely the same model used by the to and cc fields in email systems.  </p>
+<p id="rfc.section.3.5.2.p.7">There are situations, however, in which disclosing the identity of specific members of the audience may be inappropriate. For instance, a user may not wish to let other users know that they are interested in various topics, individuals or types of events.  To support this option, an event source generating an activity MAY use the "bto" and "bcc" properties to list entities to whom the activity should be privately targeted. When an intermediary receives an activity containing these properties, it MUST remove those values prior to redistributing the activity. The intent is that systems MUST consider entities listed within the "bto" and "bcc" properties as part of the Primary and Second audience but MUST NOT disclose that fact to any other party.  </p>
+<p id="rfc.section.3.5.2.p.8">Audience targeting information included within an Activity only describes the intent of the activity creator. With clear exception given to the appropriate handling of "bto" and "bcc", this specification leaves it up to implementations to determine how the audience targeting information is used.  </p>
+
+  <h3 id="rfc.section.3.6"><a id="object-ext"/>3.6. Additional Object Properties</h3>
+<p id="rfc.section.3.6.p.1">The following "additional properties" MAY be used with any JSON Object serialized within an Activity Stream document.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">alias</td>
+      <td class="left">IRI</td>
+      <td class="left">Provides a contextually meaningful alternative label for the object in addition to the "id". For instance, within some systems, groups can be identified both by a unique global ID and a more "human-friendly" label such as "@friends" or "@network".  The value of the "alias" property MUST match either the "isegment-nz-nc" or the "IRI" production in <a href="#RFC3987">[RFC3987]</a>. The use of a relative reference other than a simple name is not allowed.  </td>
+    </tr>
+    <tr>
+      <td class="left">attachments</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing one or more objects associated with the containing object. These are similiar in concept to files attached to an email message.  </td>
+    </tr>
+    <tr>
+      <td class="left">author</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing one or more entity that created or authored the object.  </td>
+    </tr>
+    <tr>
+      <td class="left">content</td>
+      <td class="left"><a href="#lang">Natural Language value</a> </td>
+      <td class="left">A Natural-language description of the object encoded as a single JSON String containing HTML markup. Visual elements such as thumbnail images MAY be included.  </td>
+    </tr>
+    <tr>
+      <td class="left">duplicates</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing one or more objects that are semantically equivalent to this object or duplicate this objects content. An object SHOULD contain a "duplicates" property when there are known objects, possibly in a different system, that are semantically equivalent or duplicate the content.  </td>
+    </tr>
+    <tr>
+      <td class="left">icon</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing one or more visual, graphic representations of the object, intended for human consumption. The visual element SHOULD have an aspect ratio of one (horizontal) to one (vertical) and SHOULD be suitable for presentation at a small size.  </td>
+    </tr>
+    <tr>
+      <td class="left">image</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing one or more visual, graphic represenations of the object. Unlike the "icon" property, there are no aspect ratio or display restrictions.  </td>
+    </tr>
+    <tr>
+      <td class="left">location</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value describing one or more physical or virtual locations associated with which the object.  </td>
+    </tr>
+    <tr>
+      <td class="left">published</td>
+      <td class="left"><a href="#RFC3339">[RFC3339]</a> date-time</td>
+      <td class="left">The date and time at which the object was published.  </td>
+    </tr>
+    <tr>
+      <td class="left">generator</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the application that generated the object.  </td>
+    </tr>
+    <tr>
+      <td class="left">provider</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the application that published the object. Note that this is not necessarily the same entity that generated the object.  </td>
+    </tr>
+    <tr>
+      <td class="left">summary</td>
+      <td class="left"><a href="#lang">Natural Language value</a> </td>
+      <td class="left">A Natural-language summarization of the object encoded as a single JSON String containing a fragment of HTML markup. Visual elements such as thumbnail images can be included.  </td>
+    </tr>
+    <tr>
+      <td class="left">updated</td>
+      <td class="left"><a href="#RFC3339">[RFC3339]</a> date-time</td>
+      <td class="left">The date and time at which a previously published object has been modified.  </td>
+    </tr>
+    <tr>
+      <td class="left">startTime</td>
+      <td class="left"><a href="#RFC3339">[RFC3339]</a> date-time</td>
+      <td class="left">A date-time describing the actual or expected starting time of the object. When used within an Activity object, for instance, the "startTime" specifies the moment the activity began or is scheduled to begin.  </td>
+    </tr>
+    <tr>
+      <td class="left">endTime</td>
+      <td class="left"><a href="#RFC3339">[RFC3339]</a> date-time</td>
+      <td class="left">A date-time describing the actual or expected ending time of the object. When used within an Activity object, for instance, the "endTime" specifies the moment the activity concluded or is scheduled to conclude.  </td>
+    </tr>
+    <tr>
+      <td class="left">rating</td>
+      <td class="left">Decimal Number between 0.0 and 5.0</td>
+      <td class="left">A quality rating expressed as a number between 0.0 and 5.0 (inclusive) with one decimal place of precision.  </td>
+    </tr>
+    <tr>
+      <td class="left">tags</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing one or more resources that are loosely associated with the containing object.  The "tags" and "attachments" properties differ from one another in that the "tags" property asserts "association by reference" while "attachments" asserts "association by enclosure".  </td>
+    </tr>
+    <tr>
+      <td class="left">title</td>
+      <td class="left"><a href="#lang">Natural Language</a> value</td>
+      <td class="left">A Natural-language title for the object expressed as a fragment of HTML markup. The "title" and "displayName" properties are closely related and overlap in function with the key difference being that "title" is permitted to contain HTML markup, while "displayName" is not.  </td>
+    </tr>
+    <tr>
+      <td class="left">duration</td>
+      <td class="left">Integer or <a href="#RFC3339">[RFC3339]</a> duration</td>
+      <td class="left">When the object describes a time-based resource, such as audio or video, the "duration" property indicates the approximate duration of time expressed as an either an RFC 3339 "duration" (e.g.  a duration of 5 seconds is represented as "PT5S") or as a non-negative integer specifying the duration in seconds.  </td>
+    </tr>
+    <tr>
+      <td class="left">height</td>
+      <td class="left">Integer</td>
+      <td class="left">When the object describes a visual resource, such as an image, video or embeddable HTML page, the "height" property indicates the recommended display height in pixels.  </td>
+    </tr>
+    <tr>
+      <td class="left">width</td>
+      <td class="left">Integer</td>
+      <td class="left">When the object describes a visual resource, such as an image, video or embeddable HTML page, the "width" property indicates the recommended display width in pixels.  </td>
+    </tr>
+    <tr>
+      <td class="left">inReplyTo</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value identifying one or more other objects to which the containing object can be considered a response.  </td>
+    </tr>
+    <tr>
+      <td class="left">actions</td>
+      <td class="left"><a href="#action">Action</a> value</td>
+      <td class="left">An optional <a href="#action">Action</a> value that describes potential activities that can be performed with the object.  </td>
+    </tr>
+    <tr>
+      <td class="left">scope</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value identifying one or more resources that define the total population of entities for which the object is considered to be relevant.  </td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="rfc.section.3.6.1"><a id="action"/>3.6.1. Action Values</h4>
+<p id="rfc.section.3.6.1.p.1">The "actions" property on an Activity Streams object is used to describe the kinds of activities that can be taken with regards to the object. The value is expressed as a JSON dictionary mapping verbs to <a href="#link">Link</a> values referencing resources or objects that can be used to carry out those verbs.  </p>
+<p id="rfc.section.3.6.1.p.2">For instance, a hypothetical object with "video" as the objectType might have "watch", "share" and "embed" as potential actions: </p>
+<pre>
+    {
+      "objectType": "video",
+      "id": "http://example.org/cats.mpg",
+      "actions": {
+        "watch": "movie://example.org/cats.mpg",
+        "share": {
+          "objectType": "service",
+          "displayName": "My Sharing Service",
+          "url": "http://example.net/share"
+        },
+        "embed": [
+          "http://example.org/gadgets/video.xml?v=cats.mpg",
+          {
+            "objectType": "inline-html",
+            "content": "&lt;video ... /&gt;"
+          }
+        ]
+      }
+    }
+</pre>
+<p id="rfc.section.3.6.1.p.3">Each key in the Action value MUST be a valid verb identifier conforming to either the "isegment-nz-nc" or "IRI" productions in <a href="#RFC3987">[RFC3987]</a> and be suitable for use as a value for <a href="#activity">Activity</a> object's "verb" property.  The value of each key MUST be a valid <a href="#link">Link</a> value.  </p>
+  <h3 id="rfc.section.3.7"><a id="collection"/>3.7. Collection</h3>
+<p id="rfc.section.3.7.p.1">Collection objects are a specialization of the base <a href="#object">Object</a> that contain a listing of other <a href="#object">objects</a> The Collection object is used primarily as the root of an Activity Streams document as described in <a href="#document">Section 4</a>, but can be used as the value of object properties.  </p>
+<p id="rfc.section.3.7.p.2">Collections have both a logical model and a physical serialization. While the logical view of a collection might contain a large number of objects, any single serialized representation might include only a subset of those objects, with specific <a href="#link">Link</a> values used to reference additional serialized representations that include additional subsets. Such representations are known as "multi-page collections", with each serialized subset representing a single "page".  </p>
+<p id="rfc.section.3.7.p.3">The value of the Collection object's "objectType" property MUST be "collection" unless the fact that the object is a collection can be determined by context.  </p>
+<p id="rfc.section.3.7.p.4">Collection objects extend the core <a href="#object">object</a> definition with the following additional properties: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">totalItems</td>
+      <td class="left">Integer</td>
+      <td class="left">Non-negative integer specifying the total number of objects contained by the logical view of the collection. This number might not reflect the actual number of items serialized within the Collection object instance.  </td>
+    </tr>
+    <tr>
+      <td class="left">items</td>
+      <td class="left">Array of <a href="#object">Objects</a> </td>
+      <td class="left">An array containing a listing of <a href="#object">Objects</a> of any type.  </td>
+    </tr>
+    <tr>
+      <td class="left">itemsAfter</td>
+      <td class="left"><a href="#RFC3339">[RFC3339]</a> date-time</td>
+      <td class="left">A RFC 3339 date-time that indicates that the collection contains only items published or updated strictly after the date and time specified.  </td>
+    </tr>
+    <tr>
+      <td class="left">itemsBefore</td>
+      <td class="left"><a href="#RFC3339">[RFC3339]</a> date-time</td>
+      <td class="left">A RFC 3339 date-time that indicates that the collection contains only items published or updated strictly before the date and time specified.  </td>
+    </tr>
+    <tr>
+      <td class="left">itemsPerPage</td>
+      <td class="left">Integer</td>
+      <td class="left">A non-negative integer specifying the maximum number of items that will be included in the value of the items array.  </td>
+    </tr>
+    <tr>
+      <td class="left">startIndex</td>
+      <td class="left">Integer</td>
+      <td class="left">A non-negative integer value identifying the relative position within the logical view of collection of the first object contained in the items property. For instance, if there are 20 items that are considered to be members of a collection, but only the last 10 of those items are included in the items property, the value of startIndex would be 10.  </td>
+    </tr>
+    <tr>
+      <td class="left">first</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the furthest preceeding page of a multi-page collection.  </td>
+    </tr>
+    <tr>
+      <td class="left">last</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the furthest following page of a multi-page collection.  </td>
+    </tr>
+    <tr>
+      <td class="left">prev</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the immediately preceding page of the multi-page collection. Note that the property name previous can be used as an equivalent alternative; however implementations SHOULD use prev and MUST NOT use both prev AND previous within the same collection.  </td>
+    </tr>
+    <tr>
+      <td class="left">next</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the immediately following page of the multi-page collection.  </td>
+    </tr>
+    <tr>
+      <td class="left">current</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing the page containing the items that have been updated or published most recently.  </td>
+    </tr>
+    <tr>
+      <td class="left">self</td>
+      <td class="left"><a href="#link">Link</a> value</td>
+      <td class="left">A <a href="#link">Link</a> value referencing this page.  </td>
+    </tr>
+  </tbody>
+</table>
+<h4 id="rfc.section.3.7.1">3.7.1. Using Collections as Summary Values</h1>
+<p id="rfc.section.3.7.1.p.1">It is a common practice to use Collection objects to provide summary information on the number of specific types of events that have occurred with respect to any given object. For instance, a "note" object may have been "shared" or "liked" a number of times by different individuals. In such cases, the Collection object is used as a property value with the "totalItems" field used to indicate the total number of occurrences, the "items" property used to provide details for a subset of the most recent occurrences, and the "id" property used to reference a separate Activity Streams document providing additional information.  </p>
+<p id="rfc.section.3.7.1.p.2">This specification defines the following properties that MAY be used within any <a href="#object">object</a> as "summary values": </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">replies</td>
+      <td class="left"><a href="#collection">Collection</a> </td>
+      <td class="left">Provides information about the set of objects that can be considered to be replies to the containing object.  </td>
+    </tr>
+  </tbody>
+</table>
+<p>In the following example, the "replies" property is used to indicate that a note has 10 responses, and provides information on the most recently received response:</p>
+<pre>{
+  "objectType": "note",
+  "id": "urn:example:note:1",
+  "displayName": "A note about things",
+  "content": "blah blah blah",
+  "replies": {
+    "url": "http://example.org/note/1/comments.json",
+    "mediaType": "application/activity+json",
+    "totalItems": 10,
+    "items": [
+      {
+        "objectType": "note",
+        "id": "urn:example:note:1:A",
+        "content": "That's profound, man."
+      }
+    ]
+  }
+}</pre>
+  <h2 id="rfc.section.4">4. The Activity Stream JSON Document</h2>
+<p id="rfc.section.4.p.1">The above defined JSON serialization can be used to represent activities, objects and media links in any context. This section defines one particular use of the above formats to publish a JSON document representing an ordered listing of Activity objects.  </p>
+<p id="rfc.section.4.p.2">Publishers using this format MUST produce a valid JSON document whose root value is a <a href="#collection">Collection</a> .  </p>
+<p id="rfc.section.4.p.3">The MIME media type of this document MUST be "application/activity+json".  </p>
+  <h2 id="rfc.section.5">5. Reserved Object Types and Verbs</h2>
+<p id="rfc.section.5.p.1">The following objectType and verb values are reserved for specific uses by this specification: </p>
+  <h3 id="rfc.section.5.1">5.1. Object Types</h3>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">activity</td>
+      <td class="left">Objects specifying "objectType":"activity" conform to the Activity construct defined in <a href="#activity">Section 3.5</a>.  </td>
+    </tr>
+    <tr>
+      <td class="left">verb</td>
+      <td class="left">Objects specifying "objectType":"verb" provide metadata about an extension verb as defined in <a href="#type-value">Section 3.3</a>.  The "id" attribute of such objects MUST be provided.  </td>
+    </tr>
+    <tr>
+      <td class="left">objectType</td>
+      <td class="left">Objects specifying "objectType":"objectType" provide metadata about an extension objectType as defined in <a href="#type-value">Section 3.3</a>.  The "id" attribute of such objects MUST be provided.  </td>
+    </tr>
+    <tr>
+      <td class="left">collection</td>
+      <td class="left">Objects specifying "objectType":"collection" conform to the Collection construct defined in <a href="#collection">Section 3.7</a>.  </td>
+    </tr>
+  </tbody>
+</table>
+  <h3 id="rfc.section.5.2">5.2. Verbs</h3>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Type</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">post</td>
+      <td class="left">The "post" verb describes the act of authoring an object and then publishing it online. The actor can be any entity; the object can be of any object type; and the target, if specified, can be of any object type. A target, however, is not required.  </td>
+    </tr>
+  </tbody>
+</table>
+  <h2 id="rfc.section.6"><a id="deprecated-syntax"/>6. Deprecated Activity Streams 1.0 Syntax</h2>
+<p id="rfc.section.6.p.1">The JSON syntax defined by this specification differs somewhat from that defined in the original <a href="#activitystreams-1.0">JSON Activity Streams 1.0</a> specification in ways that are not backwards compatible. Implementations can choose to continue supporting the JSON Activity Streams 1.0 syntax but SHOULD consider it to be deprecated. This means that while implementations MAY continue to consume the 1.0 syntax, they SHOULD NOT output the 1.0 syntax unless specifically interacting with older non-2.0 compliant implementations.  </p>
+<p id="rfc.section.6.p.2">Specifically: </p>
+
+<ol>
+  <li>Implementations MUST use the "application/stream+json" MIME media type when producing a JSON serialization of an Activity Object conforming to the 1.0 syntax, and "application/activity+json" when producing a serialization conforming to the 2.0 syntax.  </li>
+  <li>Implementations that process serializations of an Activity Object identified using either the "application/stream+json" or the more generic "application/json" MIME media type MUST follow the syntax and processing rules set by <a href="#activitystreams-1.0">[activitystreams-1.0]</a>. The 2.0 syntax and processing rules apply only when handling serializations using the "application/activity+json" media type.  </li>
+  <li>This document redefines the "displayName", "title", "content" and "summary" properties as <a href="#lang">Natural Language values</a> , which means their values can be expressed as either a String or a JSON-LD Language Map. In the 1.0 syntax, these are expressed solely as String values. Because the 1.0 values are a valid subset allowed by this specification, implementations are not required to take any specific action to continue supporting those values.  </li>
+  <li>This document redefines a large number of common properties defined originally as Objects in 1.0 as <a href="#link">Link values</a> . This means the property values can be expressed as either an IRI String, an Object, or an Array of IRI Strings and Objects. Because the 1.0 values are a valid subset allowed by this specification, implementations are not required to take any specific action to continue supporting those values.  </li>
+  <li>This specification replaces the "upstreamDuplicates" and "downstreamDuplicates" properties defined in the 1.0 syntax with a singular "duplicates" property with a <a href="#link">Link value</a> . The "upstreamDuplicates" and "downstreamDuplicates" property values in 1.0 are defined as Arrays of strings. Implementations MUST consider the union of these two values as an alias for the "duplicates" property.  </li>
+</ol>
+
+<p> </p>
+<p id="rfc.section.6.p.3">By following these requirements, all JSON Activity Streams 1.0 serializations can be processed successfully by 2.0 implementations.  </p>
+  <h2 id="rfc.section.7">7. Comparison of Identifier Values</h2>
+<p id="rfc.section.7.p.1">The values of "id" properties can be compared to determine if the identifiers represent duplicate content. The values MUST be compared on a character-by-character, case-sensitive basis.  Comparisons MUST be based solely on the character strings themselves and MUST NOT rely on dereferencing the IRIs or URIs mapped from them.  </p>
+<p id="rfc.section.7.p.2">As a consequence, two IRIs that resolve to the same resource but are not character-for-character identical will be considered different for the purposes of identifier comparison. In such cases, the "duplicates" property can be used to expressly relate such objects to one another.  </p>
+  <h2 id="rfc.section.8">8. Extensibility</h2>
+<p id="rfc.section.8.p.1">Processors that encounter unfamiliar properties within any Activity Streams object MUST NOT stop processing or signal an error and MUST continue processing the items as if those properties were not present.  </p>
+  <h2 id="rfc.section.9">9. Security Considerations</h2>
+<p id="rfc.section.9.p.1">Publishers or Consumers implementing Activity Streams as a stream of public data may also want to consider the potential for unsolicited commercial or malicious content and should take preventative measures to recognize such content and either identify it or not include it in their implementations.  </p>
+<p id="rfc.section.9.p.2">Publishers should take reasonable measures to ensure potentially malicious user input such as cross-site scripting attacks are not included in the Activity Streams data they publish.  </p>
+<p id="rfc.section.9.p.3">Consumers that re-emit ingested content to end-users MUST take reasonable measures if emitting ingested content to make sure potentially malicious ingested input is not re-emitted.  </p>
+<p id="rfc.section.9.p.4">Consumers that re-emit ingested content for crawling by search engines should take reasonable measures to limit any use of their site as a Search Engine Optimization loophole. This may include converting un-trusted hyperlinks to text or including a rel="nofollow" attribute.  </p>
+<p id="rfc.section.9.p.5">Consumers should be aware of the potential for spoofing attacks where the attacker publishes activities or objects with falsified property values with the intent of injecting malicious content, hiding or corrupting legitimate content, or misleading users.  </p>
+<p id="rfc.section.9.p.6">Activity Streams are JSON Documents and are subject to the same security considerations described in <a href="#RFC4627">[RFC4627]</a>.  </p>
+<p id="rfc.section.9.p.7">Activity Streams implementations handle URIs.  See Section 7 of <a href="#RFC3986">[RFC3986]</a>.  </p>
+<p id="rfc.section.9.p.8">Activity Streams implementations handle IRIs.  See Section 8 of <a href="#RFC3987">[RFC3987]</a>.  </p>
+  <h2 id="rfc.section.10">10. IANA Considerations</h2>
+  <h3 id="rfc.section.10.1">10.1. application/activity+xml Media Type</h3>
+<p id="rfc.section.10.1.p.1">This specification registers the application/activity+json MIME Media Type: </p>
+<p/>
+
+<ul class="empty">
+  <li>Type name: application</li>
+  <li>Subtype name: activity+json</li>
+  <li>Required parameters: None</li>
+  <li>Optional parameters: "charset" : Specifies the character set encoding.  If not specified, a default of "UTF-8" is assumed.  </li>
+  <li>Encoding considerations: Resources that use the "application/activity+json" media type are required to conform to the "application/json" Media Type and are therefore subject to the same encoding considerations specified in <a href="#RFC4627">Section 6</a> .  </li>
+  <li>Security considerations: As defined in this specification</li>
+  <li>Published specification: This specification.</li>
+  <li>Applications that use this media type: JSON Activity Streams are implemented by a wide range of existing applications.  </li>
+  <li>Additional information: <ul class="empty"><li>Magic number(s): N/A</li><li>File extension(s): N/A</li><li>Macintosh file type code(s): TEXT</li></ul></li>
+  <li>Person &amp; email address to contact for further information: James M Snell &lt;jasnell@gmail.com&gt;</li>
+  <li>Intended usage: COMMON</li>
+  <li>Restrictions on usage: None.</li>
+  <li>Author: James M Snell &lt;jasnell@gmail.com&gt;</li>
+  <li>Change controller: IESG</li>
+</ul>
+  <h2 id="rfc.references">11. References</h2>
+  <h3 id="rfc.references.1">11.1. Normative References</h3>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="RFC2119">[RFC2119]</b>
+      </td>
+      <td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, March 1997.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC3339">[RFC3339]</b>
+      </td>
+      <td class="top"><a href="mailto:GK@ACM.ORG" title="Clearswift Corporation">Klyne, G.</a> and <a href="mailto:chris.newman@sun.com" title="Sun Microsystems">C. Newman</a>, "<a href="http://tools.ietf.org/html/rfc3339">Date and Time on the Internet: Timestamps</a>", RFC 3339, July 2002.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC3986">[RFC3986]</b>
+      </td>
+      <td class="top"><a href="mailto:timbl@w3.org" title="World Wide Web Consortium">Berners-Lee, T.</a>, <a href="mailto:fielding@gbiv.com" title="Day Software">Fielding, R.</a> and <a href="mailto:LMM@acm.org" title="Adobe Systems Incorporated">L. Masinter</a>, "<a href="http://tools.ietf.org/html/rfc3986">Uniform Resource Identifier (URI): Generic Syntax</a>", STD 66, RFC 3986, January 2005.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC3987">[RFC3987]</b>
+      </td>
+      <td class="top"><a>Duerst, M.</a> and <a>M. Suignard</a>, "<a href="http://tools.ietf.org/html/rfc3987">Internationalized Resource Identifiers (IRIs)</a>", RFC 3987, January 2005.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC4627">[RFC4627]</b>
+      </td>
+      <td class="top"><a>Crockford, D.</a>, "<a href="http://tools.ietf.org/html/rfc4627">The application/json Media Type for JavaScript Object Notation (JSON)</a>", RFC 4627, July 2006.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5646">[RFC5646]</b>
+      </td>
+      <td class="top"><a>Phillips, A.</a> and <a>M. Davis</a>, "<a href="http://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a>", BCP 47, RFC 5646, September 2009.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5988">[RFC5988]</b>
+      </td>
+      <td class="top"><a>Nottingham, M.</a>, "<a href="http://tools.ietf.org/html/rfc5988">Web Linking</a>", RFC 5988, October 2010.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="W3C.WD-json-ld-20130411">[W3C.WD-json-ld-20130411]</b>
+      </td>
+      <td class="top"><a>Sporny, M.</a>, <a>Kellogg, G.</a> and <a>M. Lanthaler</a>, "<a href="http://www.w3.org/TR/2013/WD-json-ld-20130411">JSON-LD 1.0</a>", World Wide Web Consortium LastCall WD-json-ld-20130411, April 2013.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="activitystreams-1.0">[activitystreams-1.0]</b>
+      </td>
+      <td class="top"><a title="IBM">Snell, J.</a>, <a title="SAY Media">Atkins, M.</a>, <a title="Google">Norris, W.</a>, <a title="Citizen Agency, Google">Messina, C.</a>, <a title="MySpace, Facebook, VMware">Wilkinson, M.</a> and <a title="Microsoft">R. Dolin</a>, "<a href="http://activitystrea.ms/specs/json/1.0/">JSON Activity Streams 1.0</a>", May 2011.</td>
+    </tr>
+  </tbody>
+</table>
+  <h3 id="rfc.references.2">11.2. Informational References</h3>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="RFC6963">[RFC6963]</b>
+      </td>
+      <td class="top"><a>Saint-Andre, P.</a>, "<a href="http://tools.ietf.org/html/rfc6963">A Uniform Resource Name (URN) Namespace for Examples</a>", BCP 183, RFC 6963, May 2013.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="audience">[audience]</b>
+      </td>
+      <td class="top"><a title="IBM">Snell, J.</a>, "<a href="http://activitystrea.ms/specs/json/targeting/1.0/">Audience Targeting for JSON Activity Streams</a>", March 2012.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="base-schema">[base-schema]</b>
+      </td>
+      <td class="top"><a>Activity Streams Workgroup</a>, "<a href="https://github.com/activitystreams/activity-schema/blob/master/activity-schema.md">Activity Streams - Base Schema</a>", September 2012.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="priority">[priority]</b>
+      </td>
+      <td class="top"><a title="IBM">Snell, J.</a>, "<a href="https://raw.github.com/jasnell/specs/master/activitystrea.ms/priority_extension.txt">Priority Extension for JSON Activity Streams</a>", June 2012.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="responses">[responses]</b>
+      </td>
+      <td class="top"><a title="IBM">Snell, J.</a>, "<a href="http://activitystrea.ms/specs/json/replies/1.0/">Responses for Activity Streams</a>", March 2012.</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="rfc.appendix.A">Appendix A. Acknowledgements</h2>
+<p id="rfc.section.A.p.1">The author wishes to thank the Activity Streams community and implementers for their support, encouragement, and enthusiasm including but not limited to: Abdul Qabiz, Adina Levin, Adrian Chan, Adriana Javier, Alan Hoffman, Alex Kessinger, Alexander Ovchinnikov, Alexander Zhuravlev, Alexandre Loureiro Solleiro, Amy Walgenbach, Andres Vidal, Angel Robert Marquez, Ari Steinberg, Arjan Scherpenisse, Arne Roomann-Kurrik, Beau Lebens, Ben Hedrington, Ben Metcalfe, Ben Werdmuller, Benjamin Goering, Bill de h&#211;ra, Bo Xing, Bob Aman, Bob Wyman, Brett Slatkin, Brian Walsh, Brynn Evans, Charlie Cauthen, Chris Chabot, Chris Messina, Chris Toomey, Christian Crumlish, Dan Brickley, Dan Scott, Daniel Chapman, Danny Ayers, Dare Obasanjo, Darren Bounds, David Cramer, David Nelson, David Recordon, DeWitt Clinton, Douglas Pearce, Ed Summers, Elias Bizannes, Elisabeth Norris, Eric Marcoullier, Eric Woods, Evan Prodromou, Gee-Hsien Chuang, Greg Biggers, Gregory Foster, Henry Saputra, Hillary Madsen, Howard Liptzin, Hung Tran, Ian Kennedy, Ian Mulvany, Ivan Pulleyn, Jacob Kim, James Falkner, James Pike, James Walker, Jason Kahn, Jason Kantz, Jeff Kunins, Jeff Martin, Jian Lin, Johannes Ernst, John Panzer, Jon Lebkowsky, Jon Paul Davies, Jonathan Coffman, Jonathan Dugan, Joseph Boyle, Joseph Holsten, Joseph Smarr, Josh Brewer, Jud Valeski, Julien Chaumond, Julien Genestoux, Jyri Engestr&#246;m, Kaliya Hamlin, Kevin Marks, Laurent Eschenauer, Laurie Voss, Leah Culver, Libby Miller, Manu Mukerji, Mark Weitzel, Marko Degenkolb, Marshall Kirkpatrick, Martin Atkins, Martin Svensson, Marty Alchin, Mary Hoder, Matt Leventi, Matt Wilkinson, Matthias M&#252;ller-Prove, Max Engel, Max Wegmueller, Melvin Carvalho, Michael Buckbee, Michael Chan, Michael Richardson, Michael Sullivan, Mike Macgirvin, Mislav Marohni&#263;, Mo Jangda, Monica Wilkinson, Nate Benes, NeilFred Picciotto, Nick Howard, Nick Lothian, Nissan Dookeran, Nitya Narasimhan, Pablo Martin, P&#225;draic Brady, Pat G.  Cappalaere, Patrick Aljord, Peter Ferne, Peter Reiser, Peter Saint-Andre, Phil Wolff, Philip (flip) Kromer, Richard Cunningham, Richard Zhao, Rick Severson, Robert Hall, Robert Langbert, Robert Dolin, Robin Cover, Ryan Boyd, Sam Sethi, Scott Raymond, Scott Seely, Simon Grant, Simon Wistow, Stephen Garcia, Stephen Sisk, Stephen Paul Weber, Steve Ivy, Steve Midgley, Steven Livingstone-Perez, Sylvain Carle, Sylvain Hellegouarch, Tantek &#199;elik, Tatu Saloranta, Tim Moore, Timothy Young, Todd Barnard, Tosh Meston, Tyler Gillies, Will Norris, Zach Copley, and Zach Shepherd.</p>
+<h2 id="rfc.appendix.B">Appendix B. Processing as JSON-LD</h2>
+<p id="rfc.section.B.p.1">While the Activity Streams 2.0 syntax is designed to be compatible with JSON-LD, in order to successfully process an Activity Streams document as JSON-LD, a "@context" description needs to be provided.  The following example illustrates an Activity Streams document that can be processed as JSON-LD containing Schema.org defined metadata elements.  </p>
+<pre>
+  {
+    "@context": {
+      "@vocab": "http://activitystrea.ms/spec/2.0/",
+      "verb": "@type",
+      "objectType": "@type",
+      "id": "@id",
+      "actor": "http://schema.org/Action/performedBy",
+      "object": "http://schema.org/BuyAction/bought",
+      "purchase": "http://schema.org/BuyAction",
+      "person": "http://schema.org/Person",
+      "book": "http://schema.org/Book"
+    },
+    "verb" : "purchase",
+    "id" : "urn:example:purchase:123/abc",
+    "displayName": "John purchased 'A Tale of Two Cities'",
+    "startTime" : "2013-04-02T12:31Z",
+    "endTime" : "2013-04-02T12:31Z",
+    "actor": {
+      "objectType": "person",
+      "displayName": "John Doe"
+    },
+    "object": {
+      "objectType": "book",
+      "displayName": "A Tale of Two Cities"
+    }
+  }
+</pre>
+<h2 id="rfc.appendix.C">Appendix C. Motivational Use Cases</h2>
+<p id="rfc.section.C.p.1">This specification defines a number of syntax changes relative to the JSON Activity Streams 1.0 specification. The sections that follow describe some of the general motivations for these changes with illustrative examples.  </p>
+<h3 id="rfc.appendix.C.1">C.1. Internationalization (i18n)</h3>
+<p id="rfc.section.C.1.p.1">The JSON Activity Streams 1.0 syntax has no inherent notion of a "language context". That is, the core syntax has no internal mechanism a publisher can use to identify the language used when constructing the Activity Streams document. Nor are there any existing mechanisms at the JSON syntax level that an Activity Streams implementation can inherit. This specification introduces the "language" property and Natural Language Value concepts to fill this gap.  </p>
+<p id="rfc.section.C.1.p.2">Imagine a scenario with a service that receives Activity objects from users and republishes those to a distributed audience of interested parties. This service spans international boundaries and the users speak a multitude of different languages. Within this system, a native English speaker might subscribe to notifications about activities posted by a native French speaker.  </p>
+<p id="rfc.section.C.1.p.3">For instance, let's suppose that our native French speaker posts the following activity to this system: </p>
+<pre>
+  POST /activity/feed HTTP/1.1
+  Content-Type: application/activity+xml
+  
+  {
+    "verb": "post",
+    "language": "fr",
+    "object": {
+      "objectType": "article",
+      "displayName": "Un exemple basique",
+      ...
+    }
+  }
+</pre>
+<p id="rfc.section.C.1.p.4">The system receives this activity post and prepares to notify our native English speaking user. Knowing that this user prefers English and does not speak a word of French, the system can inspect the Activity and detect automatically that a translation ought to be provided. Rather than replacing the original French text, however, the service can simply add in the English translation along side it.  </p>
+<pre>
+  {
+    "verb": "post",
+    "language": "fr",
+    "actor": {
+      "id": "urn:example:person:abc",
+      "displayName": "Jean Valjean"
+    },
+    "object": {
+      "type": "article",
+      "displayName": {
+        "fr": "Un exemple basique",
+        "en": "A basic example"
+      }
+      ...
+    }
+  }
+</pre>
+<p id="rfc.section.C.1.p.5">It is also possible for a Natural Language Value to express alternative same-language representations of a string that utilize different writing systems or regions. For instance, it is common for Japanese translations to provide equivalent ideographic (kanji) and phonetic (katakana or hiragana) alternatives: </p>
+<pre>
+  {
+    "title": {
+      "ja-Hani": "...",
+      "ja-Kana": "..."
+    }
+  }
+</pre>
+<h3 id="rfc.appendix.C.2">C.2. Extensibility (e11y)</h3>
+<p id="rfc.section.C.2.p.1">Arguably, the two most important extensibility points in the Activity Streams format are the object type and verb properties. Implementations are free to come up with their own types and verbs at any point. While such extensibility is extremely powerful, it comes with a cost. Namely, implementations that encounter previously unknown verbs and object types may not have enough to knowledge about those to do anything significant with them.  </p>
+<p id="rfc.section.C.2.p.2">For instance, the most common use case for Activity Streams today is the generation of a human-readable "activity feed" that translates Activity objects into sentences just as "John uploaded a new photo" or "Jane checked in at a hotel", etc. Given an extension verb such as "http://example.org/whatever", an implementation might not have sufficient information about that verb to generate a readable sentence describing the activity that occurred.  </p>
+<p id="rfc.section.C.2.p.3">With Activity Streams 1.0, a number of different approaches have been tried to address this problem, but all of the solutions essentially deal with the need to provide additional metadata about extension verbs and object types so that an implementation can dynamically learn and adapt. The notion of "type values" is added by this specification to specifically deal with this issue.  </p>
+<p id="rfc.section.C.2.p.4">For example, suppose I have an implementation that generates Activity objects that use a new extension verb "urn:example:verbs:upload". Knowing that consumers of these objects might not have encountered this verb before, I want to make it possible for those implementations to automatically discover metadata about the new verb. To do so, I can use a type value to provide some basic information.  </p>
+<pre>
+  {
+    "verb": {
+      "id": "urn:example:verbs:upload",
+      "url": "http://example.org/verbs.json",
+      "mediaType": "application/ld+json",
+      "displayName": {
+        "en": "upload",
+        "fr": "televersement"
+      },
+      "alias": "post"
+    },
+    "actor": {
+      "type": "person",
+      "displayName": "John"
+    },
+    "object": {
+      "type": "photo",
+      "displayName": "cats.jpg"
+    }
+  }
+</pre>
+<p id="rfc.section.C.2.p.5">An implementation receiving this has several choices. It could choose to ignore everything other than the verb's identifier, treating it generically as one would have to today using the 1.0 syntax; or, it could inspect the metadata provided and notice that the extension verb can be treated generally as an alias of "post" or displayed in English as "upload" and in French as "televersement"; or, it can choose to attempt discovering more information about the verb by dereferencing the provided URL.  </p>
+<p id="rfc.section.C.2.p.6">The point is, these options are built into the core syntax, making extension verbs and object types significantly more usable, particularly when combined with the new language context features.  </p>
+<h3 id="rfc.appendix.C.2.1">C.2.1. Publishing Extension objectType and verb Libraries</h3>
+<p id="rfc.section.C.2.1.p.1">By treating extension objectTypes and verbs as objects in their own right, it becomes trivially possible to use the Activity Streams format as a means of publishing metadata about extension verbs.  </p>
+<p id="rfc.section.C.2.1.p.2">For example:</p>
+<pre>
+  {
+    "displayName": "My object types and verbs",
+    "items": [
+      {
+        "objectType": "verb",
+        "id": "urn:example:verbs:create",
+        "alias": "post",
+        "displayName": "Create"
+      },
+      {
+        "objectType": "objectType",
+        "id": "urn:example:types:article",
+        "displayName": "Article"
+      }
+    ]
+  }
+</pre>
+<p id="rfc.section.C.2.1.p.3">Implementations could use such documents to dynamically learn about new verbs and objectTypes.  </p>
+<h3 id="rfc.appendix.C.3">C.3. First Class Links</h3>
+<p id="rfc.section.C.3.p.1">Linking in the 1.0 syntax is largely undefined and inconsistent.  There is a general notion of Media Link objects that are used for some things like images and videos, along with a "url" property that in some cases is used to always point to HTML represenations while in other cases might point to JSON documents or image files, and there is no reusable concept of a generic link provided for extensions to leverage which has led to inconsistent implementation.  The 2.0 syntax introduced here deals with these issues by introducing a clear, consistent, reusable first class linking model.  </p>
+<p id="rfc.section.C.3.p.2">For instance, using the 2.0 syntax, an "image" object type can be represented simply as: </p>
+<pre>
+  {
+    "objectType": "image",
+    "url": "http://example.org/cats.jpg",
+    "mediaType": "image/jpeg",
+    "displayName": "A picture of my cats",
+    "alternate": {
+      "url": "http://example.org/gallery?i=cats.jpg",
+      "mediaType": "text/html"
+    }
+    "preview": "http://example.org/thumbnails/cats.jpg"
+  }
+</pre>
+<p id="rfc.section.C.3.p.3">Essentially, any 2.0 object that contains a "url" property can be interpreted as a link. That "url" property points to a representation of the object, while the "mediaType" property identifies the content type of that linked resource. RFC 5988 Link Relations can be used directly within the 2.0 syntax to provide additional data -- in this case, an alternative HTML representation of the image as well as a thumbnail preview.  </p>
+<p id="rfc.section.C.3.p.4">Another case that the more flexible linking approach allows us to address is providing multiple links for a single property.  For instance, it is not uncommon for there to be several alternative versions of an image resource offered at various resolutions to support multiple types of devices. With the 2.0 syntax, multiple choices for a single link can be easily provided.  </p>
+<pre>
+  {
+    "objectType": "application",
+    "displayName": "My application",
+    "icon": [
+      {
+        "url": "http://example.org/sd/icon.png",
+        "width": 57,
+        "height": 57
+      },
+      {
+        "url": "http://example.org/hd/icon.png",
+        "width": 114,
+        "height": 114
+      }
+    ],
+    "preview": [
+      "http://www.example.org/screenshots/1.jpg",
+      "http://www.example.org/screenshots/2.jpg",
+      "http://www.example.org/screenshots/3.jpg"
+    ]
+  }  
+</pre>
+<h3 id="rfc.appendix.C.4">C.4. Use of External Vocabularies</h3>
+<p id="rfc.section.C.4.p.1">Use of an "external vocabulary" within Activity Streams means using object types, verbs and properties that are not defined by the core Activity Streams specification. An example would be using concepts defined within a microdata vocabulary such as that defined by Schema.org (http://schema.org).  </p>
+<p id="rfc.section.C.4.p.2">Implementations that wish to use a Activity Streams with such external vocabularies face the challenge that, often times, identical or overlapping concepts can be expressed in a multitude of ways depending on which vocabulary is selected. This can make it difficult to map abstract data models into a specific JSON serialization.  </p>
+<p id="rfc.section.C.4.p.3">For instance, suppose an application uses the Schema.org model to represent an article, described here: http://schema.org/Article.  Within this model, there are several properties defined that directly overlap properties defined by the core Activity Streams syntax.  Such properties include "name", "contentLocation", and "articleBody". In order to encode the abstact model of a Schema.org/Article into the JSON Activity Streams model, the application needs to determine precisely how to map the abstract properties to the serialized format. In Activity Streams 1.0, no guidance was given on how to achieve such a mapping, within the 2.0 syntax, the JSON Serialization for Linked Data (JSON-LD) provides a foundation.  </p>
+<p id="rfc.section.C.4.p.4">Using JSON-LD I can maintain basic Activity Streams 2.0 syntax while mapping the physical serialization to the abstract model inline.  </p>
+<pre>
+  {
+    "objectType": "article",
+    "displayName": "My article about things",
+    "content": "This is my article",
+    "@context": {
+      "objectType": "@type",
+      "article": "http://schema.org/Article",
+      "displayName": "http://schema.org/name",
+      "content": "http://schema.org/Article/articleBody"
+    }
+  }  
+</pre>
+<p id="rfc.section.C.4.p.5">For any non-JSON-LD aware implementation, this can be processed just as if it were an ordinary Activity Streams object, without any additional consideration given. For a JSON-Ld aware implementation, however, the addition of the "@context" property allows the serialized JSON to be unambiguously mapped to the Schema.org concept of an "Article". The fact that we can support such a mapping allows the Activity Streams format to extend to a broader range of scenarios without requiring alternative, incompatible vocabulary specific models of "actions" or "activities" to be developed.  </p>
+<h3 id="rfc.appendix.C.5">C.5. Embedded Actions</h3>
+<p id="rfc.section.C.5.p.1">Every Activity Streams object represents a discreet modular component that can be distributed, shared, or acted upon in a variety of ways. The 2.0 syntax allows these components to not only express information about the content but also about the specific types of actions that can be performed with the object.  </p>
+<p id="rfc.section.C.5.p.2">For example, an email that is automatically generated by an expense reporting system could embed a structured Activity Stream object that contains a listing of the possible actions the recipient of the email can take. An intelligent email agent can interpret this embedded metadata and provide a tailored, in-context UI experience: </p>
+<pre>
+  &lt;html&gt;
+    &lt;body&gt;
+      &lt;script type="application/activity+json"&gt;
+        {
+          "objectType": "expense-report",
+          "url": "url": "https://example.org/view?id=abc123",
+          "description": "John's trip to San Francisco",
+          "actions": {
+            "approve": "https://example.org/approve?id=abc123",
+            "reject": "https://example.org/reject?id=abc123"
+          }
+        }
+  &lt;/script&gt;
+    &lt;p&gt;
+      Your employee, John Doe, has submitted a new expense 
+      report for "John's trip to San Francisco"....
+    &lt;/body&gt;
+  &lt;/html&gt;
+</pre>
+<h2 id="rfc.authors">Author's Address</h2>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">James M Snell</span> (editor)
+	</span>
+	<span class="org vcardline">IBM</span>
+	<span class="adr">	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span><br/>
+	<span class="vcardline">Email: <a href="mailto:jasnell@gmail.com">jasnell@gmail.com</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>

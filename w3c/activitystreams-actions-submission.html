@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta charset="UTF-8">
+  <title>Activity Streams 2.0 - Action Handlers</title>
+
+  <style type="text/css" title="Xml2Rfc tables (sans serif)">
+      pre {
+          margin-left: 3em;
+          background-color: lightyellow;
+          padding: .25em;
+      }
+      pre.text2 {
+          border-style: dotted;
+          border-width: 1px;
+          background-color: #f0f0f0;
+          width: 69em;
+      }
+      pre.inline {
+          background-color: white;
+          padding: 0em;
+      }
+      pre.text {
+          border-style: dotted;
+          border-width: 1px;
+          background-color: #f8f8f8;
+          width: 69em;
+      }
+      pre.drawing {
+          border-style: solid;
+          border-width: 1px;
+          background-color: #f8f8f8;
+          padding: 2em;
+      }
+      table {
+          margin-left: 2em;
+      }
+      table.tt {
+          vertical-align: top;
+      }
+      table.full {
+          border-style: outset;
+          border-width: 1px;
+      }
+      table.headers {
+          border-style: outset;
+          border-width: 1px;
+      }
+      table.tt td {
+          vertical-align: top;
+      }
+      table.full td {
+          border-style: inset;
+          border-width: 1px;
+      }
+      table.tt th {
+          vertical-align: top;
+      }
+      table.full th {
+          border-style: inset;
+          border-width: 1px;
+      }
+      table.headers th {
+          border-style: none none inset none;
+          border-width: 1px;
+      }
+      table.left {
+          margin-right: auto;
+      }
+      table.right {
+          margin-left: auto;
+      }
+      table.center {
+          margin-left: auto;
+          margin-right: auto;
+      }
+      td {
+         padding: 3px;
+      }
+      td.top {
+          vertical-align: top;
+      }
+      td.topnowrap {
+          vertical-align: top;
+          white-space: nowrap;
+      }
+      td.header {
+          background-color: gray;
+          width: 50%;
+      }
+      td.reference {
+          vertical-align: top;
+          white-space: nowrap;
+          padding-right: 1em;
+      }
+      thead {
+          display:table-header-group;
+      }
+  </style>
+  
+  <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-Member-SUBM"/>
+
+  <link href="#rfc.toc" rel="Contents"/>
+<link href="#rfc.section.1" rel="Chapter" title="1 Overview"/>
+<link href="#rfc.section.2" rel="Chapter" title="2 Action Handlers"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 HTTP Action Handler"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 Embed Action Handler"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Intent Action Handler"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Using &quot;service&quot; and &quot;application&quot; objects as action handlers"/>
+<link href="#rfc.section.7" rel="Chapter" title="7 HTML Form Objects"/>
+<link href="#rfc.section.8" rel="Chapter" title="8 Typed Payload Objects"/>
+<link href="#rfc.section.9" rel="Chapter" title="9 URL Template Objects"/>
+<link href="#rfc.section.10" rel="Chapter" title="10 Parameters Object"/>
+<link href="#rfc.section.10.1" rel="Chapter" title="10.1 Parameter Object"/>
+<link href="#rfc.section.10.2" rel="Chapter" title="10.2 Using UrlTemplate and TypedPayload objects as parameter descriptions"/>
+<link href="#rfc.section.11" rel="Chapter" title="11 Authentication Object"/>
+<link href="#rfc.section.12" rel="Chapter" title="12 Styles Object"/>
+<link href="#rfc.section.13" rel="Chapter" title="13 Security Considerations"/>
+<link href="#rfc.section.14" rel="Chapter" title="14 IANA Considerations"/>
+<link href="#rfc.references" rel="Chapter" title="15 Normative References"/>
+<link href="#rfc.appendix.A" rel="Chapter" title="A Using Action Handlers From Other Vocabularies"/>
+<link href="#rfc.appendix.A.1" rel="Chapter" title="A.1 Schema.org Actions Proposal"/>
+<link href="#rfc.appendix.A.2" rel="Chapter" title="A.2 Google's &quot;Actions in the Inbox&quot;"/>
+<link href="#rfc.appendix.A.3" rel="Chapter" title="A.3 Mixing Vocabularies"/>
+<link href="#rfc.appendix.A.4" rel="Chapter" title="A.4 Example Drawing From Multiple Vocabularies"/>
+<link href="#rfc.authors" rel="Chapter"/>
+
+  <meta name="dct.creator" content="Snell, J. and M. Marum" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-snell-activitystreams-actions-03" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-1" />
+  <meta name="dct.abstract" content="This specification defines Action Handlers for use with the Activity Streams 2.0 format.  " />
+  <meta name="description" content="This specification defines Action Handlers for use with the Activity Streams 2.0 format.  " />
+
+</head>
+
+<body>
+
+  <div class="head">
+    <p>
+      <a href="http://www.w3.org/">
+        <img alt="W3C" height="48" src="http://www.w3.org/Icons/w3c_home" width="72">
+      </a>
+      <a href="http://www.w3.org/Submission/">
+        <img height="48" width="211" src="http://www.w3.org/Icons/member_subm" alt="W3C Member Submission">
+      </a>
+    </p>
+    <h1 style="clear:both" id="title">
+      Activity Streams 2.0 - Action Handlers
+    </h1>
+    <h2 id="W3C-doctype">
+      W3C Member Submission 20 February 2014
+    </h2>
+
+    <dl>
+      <dt>This version:</dt>
+      <dd>
+        <a href="http://www.w3.org/Submission/2014/SUBM-osapi-20140130/">
+          http://www.w3.org/Submission/2014/SUBM-osapi-20140130/
+        </a>
+      </dd>
+      <dt>Latest version:</dt>
+      <dd>
+        <a href="http://www.w3.org/Submission/SUBM-osapi-20140130/">
+          http://www.w3.org/Submission/SUBM-osapi-20140130/
+        </a>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Authors:</dt>
+      <dd>James M Snell (IBM)</dd>
+      <dd>Matthew Marum (SugarCRM, OpenSocial)
+    </dl>
+
+    <p class="copyright">Copyright © 2014 http://activitystrea.ms. This document 
+      is available under the <a href="http://www.w3.org/Consortium/Legal/copyright-documents">W3C Document
+      License</a>. See the <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">W3C
+      Intellectual Rights Notice and Legal Disclaimers</a> for additional
+      information.
+    </p>
+    <hr>
+  </div>
+
+  <h2 id="rfc.abstract">Abstract</h2>
+<p>This specification defines Action Handlers for use with the Activity Streams 2.0 format.  </p>
+<h2>Author's Note</h2>
+<p>Note that this document is a work-in-progress draft specification that does not yet represent a "standard". It is the intention of this specification to propose a few new ideas and openly solicit feedback on their definition and use. While this document might eventually evolve into an RFC the ideas described herein have not yet been broadly implemented and have definitions that will evolve through successive iterations of this draft.  </p>
+
+<h2 id="status">Status of this document</h2>
+
+<p><em>
+  This section describes the status of this document at the time of its 
+  publication. Other documents may supersede this document. A list of 
+  current W3C publications can be found in the 
+  <a href="http://www.w3.org/TR/">W3C technical reports index</a> at 
+  http://www.w3.org/TR/.</em>
+</p>
+
+<p>
+  By publishing this document, W3C acknowledges that the 
+  <a href="http://www.w3.org/Submission/@@@submissiondoc@@@">Submitting Members</a>
+  have made a formal Submission request to W3C for discussion.
+  Publication of this document by W3C indicates no endorsement of its
+  content by W3C, nor that W3C has, is, or will be allocating any
+  resources to the issues addressed by it. This document is not the
+  product of a chartered W3C group, but is published as potential input
+  to the <a href="http://www.w3.org/Consortium/Process">W3C Process</a>.
+  A <a href="http://www.w3.org/Submission/@@@teamcomment@@@">W3C Team Comment</a> 
+  has been published in conjunction with this Member Submission.
+  Publication of acknowledged Member Submissions at the W3C site is one
+  of the benefits of <a href="http://www.w3.org/Consortium/Prospectus/Joining">W3C
+  Membership</a>. Please consult the requirements associated with
+  Member Submissions of <a href="http://www.w3.org/Consortium/Patent-Policy-20030520.html#sec-submissions">section
+  3.3 of the W3C Patent Policy</a>. Please consult the complete
+  <a href="http://www.w3.org/Submission">list of acknowledged W3C Member
+  Submissions</a>.
+</p>
+
+  <h2 class="np" id="rfc.toc">Table of Contents</h2>
+  <ul class="toc">
+
+<li>1.   <a href="#rfc.section.1">Overview</a></li>
+<li>2.   <a href="#rfc.section.2">Action Handlers</a></li>
+<li>3.   <a href="#rfc.section.3">HTTP Action Handler</a></li>
+<li>4.   <a href="#rfc.section.4">Embed Action Handler</a></li>
+<li>5.   <a href="#rfc.section.5">Intent Action Handler</a></li>
+<li>6.   <a href="#rfc.section.6">Using "service" and "application" objects as action handlers</a></li>
+<li>7.   <a href="#rfc.section.7">HTML Form Objects</a></li>
+<li>8.   <a href="#rfc.section.8">Typed Payload Objects</a></li>
+<li>9.   <a href="#rfc.section.9">URL Template Objects</a></li>
+<li>10.   <a href="#rfc.section.10">Parameters Object</a></li>
+<li>10.1.   <a href="#rfc.section.10.1">Parameter Object</a></li>
+<li>10.2.   <a href="#rfc.section.10.2">Using UrlTemplate and TypedPayload objects as parameter descriptions</a></li>
+<li>11.   <a href="#rfc.section.11">Authentication Object</a></li>
+<li>12.   <a href="#rfc.section.12">Styles Object</a></li>
+<li>13.   <a href="#rfc.section.13">Security Considerations</a></li>
+<li>14.   <a href="#rfc.section.14">IANA Considerations</a></li>
+<li>15.   <a href="#rfc.references">Normative References</a></li>
+<li>Appendix A.   <a href="#rfc.appendix.A">Using Action Handlers From Other Vocabularies</a></li>
+<li>A.1.   <a href="#rfc.appendix.A.1">Schema.org Actions Proposal</a></li>
+<li>A.2.   <a href="#rfc.appendix.A.2">Google's "Actions in the Inbox"</a></li>
+<li>A.3.   <a href="#rfc.appendix.A.3">Mixing Vocabularies</a></li>
+<li>A.4.   <a href="#rfc.appendix.A.4">Example Drawing From Multiple Vocabularies</a></li>
+<li><a href="#rfc.authors">Authors' Addresses</a></li>
+
+
+  </ul>
+
+  <h2 id="rfc.section.1">1. Overview</h2>
+<p id="rfc.section.1.p.1">The Activity Streams 2.0 <a href="#I-D.snell-activitystreams">[I-D.snell-activitystreams]</a> specification introduces the notion of "actions" that can be associated with objects. Using the "actions" property described in Sections 3.6 and 3.6.1 of the Activity Streams 2.0 document, the producer of an object can declare a specific set of verbs appropriate for the object and map each of those to one or more objects ("action handlers") or resources capable of "carrying out" the verb. This document expands on that mechanism by defining and describing a core set of action handler object types.  </p>
+<h2 id="rfc.section.2">2. Action Handlers</h2>
+<p id="rfc.section.2.p.1">An action handler is an Activity Streams 2.0 object whose objectType and member properties instruct a consuming application how to carry out the verb the action handler has been associated with. For instance, given the following example: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "Title of the note",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "HttpActionHandler",
+        "url": "http://example.org/share"
+      },
+      "like": {
+        "objectType": "EmbedActionHandler",
+        "mediaType": "text/plain",
+        "content": "Hello World"
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.2.p.2">The "note" object has two declared actions, "share" and "like". Each of those is associated with one action handler object. The "share" action has a action handler of type "HttpActionHandler", while the "like" action has an "EmbedActionHandler".  </p>
+<p id="rfc.section.2.p.3">As illustrated in the example, action handlers are represented as Activity Streams 2.0 objects. All such objects share a common set of base member properties as defined in the following table: </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">confirm</td>
+      <td class="left">Boolean</td>
+      <td class="left">No</td>
+      <td class="left">True if the consuming application ought to seek confirmation prior to using the action handler to carry out it's associated action. Defaults to False.  </td>
+    </tr>
+    <tr>
+      <td class="left">context</td>
+      <td class="left">JSON Object</td>
+      <td class="left">No</td>
+      <td class="left">Contextual information associated with the action handler, represented as a JSON Object without any particular structure. How the context is used is dependent entirely on the action handler definition and on how a consuming application chooses to implement the action handler.  </td>
+    </tr>
+    <tr>
+      <td class="left">expects</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Link Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">For action handlers with a distinct input requirement (e.g. HttpActionHandler), the expects property provides a description of the expected input. The value is expressed as either a String containing a fully qualified IRI, an Activity Stream Object, or an Array of IRI's or Objects.  When multiple values are provided, they MUST be considered as mutually exclusive alternatives.  </td>
+    </tr>
+    <tr>
+      <td class="left">returns</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Link Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">For action handlers with a distinct output, the returns property provides a description of the expected output.  The value is expressed as either a String containing a fully qualified IRI, an Activity Stream Object, or an Array of IRI's or Objects. When multiple values are provided, they MUST be considered as mutually exclusive alternatives.  </td>
+    </tr>
+    <tr>
+      <td class="left">auth</td>
+      <td class="left"><a href="#authentication">Authentication Value</a></td>
+      <td class="left">No</td>
+      <td class="left">For action handlers with specific authentication requirements, the "auth" property provides information about the specific authentication mechanisms supported.  </td>
+    </tr>
+    <tr>
+      <td class="left">requires</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Link Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">An optional Link Value whose value(s) describe features or behaviors an implementation MUST support in order to carry out the action.  Requirements are designed to be intentionally open-ended and will vary depending on specific Action Handler type. Any implementation that does not support any specified required feature MUST ignore the Action Handler.  </td>
+    </tr>
+    <tr>
+      <td class="left">prefers</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Link Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">An optional Link Value whose value(s) describe features or behaviors an implementation SHOULD support in order to carry out the action.  Requirements are designed to be intentionally open-ended and will vary depending on specific Action Handler type. Any implementation that does not support any specified preferred feature MAY ignore the feature.  </td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.2.p.4">This specification defines three specific base types of action handler: </p>
+
+<ul>
+  <li><a href="#httpactionhandler">The HTTP Action Handler</a> ,</li>
+  <li><a href="#embedactionhandler">The Embed Action Handler</a> , and</li>
+  <li><a href="#intentactionhandler">The Intent Action Handler</a> .</li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.2.p.5">Implementations are free to use Activity Stream objects of any objectType as an action handler. Consuming applications MAY ignore any object it encounters that use objectTypes that are not recognized or supported as action handlers. Alternatively, the consuming application MAY treat such objects as implied <a href="#intentactionhandler">Intent Action Handlers</a> .  </p>
+<p id="rfc.section.2.p.6">Multiple independent action handlers can be associated with any single verb using a JSON Array. The ordering of objects within such an array is not considered to be significant.  </p>
+<p id="rfc.section.2.p.7">For example, in the following, the "share" action has two associated action handlers: </p>
+<pre>
+  {
+    "objectType": "event",
+    "displayName": "Party!",
+    "content": "We're going to party like it's 1999!",
+    "id": "urn:example:events:123",
+    "actions": {
+      "share": [
+        {
+          "objectType": "HttpActionHandler",
+          "method": "GET",
+          "url": "http://example.org/share-action",
+          "target": "DIALOG",
+          "returns": {
+            "objectType": "TypedPayload",
+            "mediaType": "text/html"
+          }
+        },
+        {
+          "objectType": "EmbedActionHandler",
+          "mediaType": "text/html",
+          "content": "&lt;div&gt;...&lt;/div&gt;"
+        }
+      ]  
+    }
+  }
+</pre>
+<h2 id="rfc.section.3">3. HTTP Action Handler</h2>
+<p id="rfc.section.3.p.1">An HTTP Action Handler describes an HTTP request/response flow that is used to carry out an action. It is identified using an objectType value of "HttpActionHandler".  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">url</td>
+      <td class="left">Link Value</td>
+      <td class="left">Yes</td>
+      <td class="left">Specifies the HTTP or HTTPS URL to which the HTTP request is directed.  </td>
+    </tr>
+    <tr>
+      <td class="left">method</td>
+      <td class="left">HTTP Method String (e.g. "GET", "POST", "PUT", etc)</td>
+      <td class="left">No</td>
+      <td class="left">The HTTP method to use. Defaults to "GET"</td>
+    </tr>
+    <tr>
+      <td class="left">target</td>
+      <td class="left">
+        <ul>
+        <li>"DEFAULT" - Consumer defined default;</li>
+        <li>"NONE" - No navigation or UI context (e.g. a hidden HTTP action that does not result in the creation or use of a browser window); </li>
+        <li>"NEW" - A new navigation or UI context (e.g. show the results of the HTTP request in a browser window or tab.); </li>
+        <li>"CURRENT" - Reuse the existing navigation or UI context (e.g. show the results of the HTTP request in an existing browser window or tab.); </li>
+        <li>{Other token value} - Any other TOKEN value. Interpretation and support of such extension tokens is dependent on the consuming application. Unknown or unsupported values MUST be ignored.</li>
+      </ul>
+      </td>
+      <td class="left">No</td>
+      <td class="left">Specifies the intended target of the HTTP action.  This determines whether the action results in a new navigation context (e.g. new browser window) or whether the action is "hidden". When not specified, defaults to "DEFAULT", meaning that the consuming application is free to determine an appropriate target context.  </td>
+    </tr>
+  </tbody>
+</table>
+<p>For example:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "HttpActionHandler",
+        "url": "http://example.org/foo",
+        "method": "GET"
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.3.p.2">As a shortcut, HttpActionHandlers that use the "GET" method and a "DEFAULT" target can be specified using a JSON string containing the absolute URL. For instance: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": "http://example.org/foo"
+    }
+  }
+</pre>
+<p id="rfc.section.3.p.3">In the Activity Streams 2.0 format, the "url" property is defined as a "Link Value", this means that it is possible for the value of the "url" property to be an Activity Stream object that a consuming application can use to resolve the actual target URL. This specification defines a new <a href="#urltemplate">UrlTemplate</a>  objectType specifically intended for such use.  </p>
+<p id="rfc.section.3.p.4">The UrlTemplate object can be used within an HTTP Action Handler, for instance, whenever carrying out the HTTP request requires the construction of a new URL that includes variable parameters: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "url": {
+          "objectType": "UrlTemplate",
+          "method": "POST",
+          "template": "http://example.org/note/123{?rating}",
+          "parameters": {
+            "rating": {
+              "id": "http://schema.org/ratingValue",
+              "displayName": "Rating",
+              "maximum": 5,
+              "minimum": 1,
+              "format": "uint32"
+            }
+          }
+        },
+        "method": "GET",
+        "target": "NEW"
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.3.p.5">If the intended HTTP request uses the GET method and DEFAULT target, the UrlTemplate object itself can be used directly as the action handler.  </p>
+<p>"GET" HttpActionHandler shortcut using a URL Template:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "UrlTemplate",
+        "template": "http://example.org/note/123{?rating}",
+        "parameters": {
+          "rating": {
+            "id": "http://schema.org/ratingValue",
+            "displayName": "Rating",
+            "maximum": 5,
+            "minimum": 1,
+            "format": "uint32"
+          }
+        }
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.3.p.6">If the HTTP request requires an input payload, the HttpActionHandler object can contain an "expects" property. The value of "expects" is an Activity Streams 2.0 "Link Value" represented either as a simple JSON string containing a fully qualified IRI, an Activity Stream object, or an array of IRI's or Objects. This specification defines a new <a href="#htmlform">HtmlForm</a>  objectType to be used whenever the input of the HTTP request is an HTML Form POST. A new <a href="#typedPayload">TypedPayload</a>  objectType is defined for use whenever the input is an arbitrary MIME media type.  </p>
+<p id="rfc.section.3.p.7">For example, the following describes an HTML Form post with a single "foo" parameter submitted using the "application/x-www-form-urlencoded" format: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "HtmlForm",
+          "mediaType": "application/x-www-form-urlencoded",
+          "parameters": {
+            "foo": {
+              "id": "http://example.org/foo",
+              "type": "http://www.w3.org/2001/XMLSchema#string",
+              "displayName": "Foo Property"
+            }
+          }
+        }
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.section.4">4. Embed Action Handler</h2>
+<p id="rfc.section.4.p.1">An Embed Action Handler defines static or dynamic content to be visually rendered to carry out an action. Examples of embeds can include static HTML, images, videos, gadgets and applications. It is identified using an objectType value of "EmbedActionHandler".  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">url</td>
+      <td class="left">Link Value</td>
+      <td class="left">Yes if "content" is not specified.</td>
+      <td class="left">The URL from which to retrieve the content for this embed.  </td>
+    </tr>
+    <tr>
+      <td class="left">content</td>
+      <td class="left">String</td>
+      <td class="left">Yes if "url" is not specified.</td>
+      <td class="left">The character based "static" content to be embeded. The "mediaType" parameter specifies the MIME media type of the content.  </td>
+    </tr>
+    <tr>
+      <td class="left">mediaType</td>
+      <td class="left">MIME Media Type</td>
+      <td class="left">No (but strongly recommended)</td>
+      <td class="left">The MIME Media Type of the embedded content.</td>
+    </tr>
+    <tr>
+      <td class="left">style</td>
+      <td class="left"><a href="#stylesobject">Styles Object</a> </td>
+      <td class="left">No</td>
+      <td class="left">Visual CSS styling hints to apply to the element containing the embedded content.  </td>
+    </tr>
+    <tr>
+      <td class="left">preview</td>
+      <td class="left">Link Value</td>
+      <td class="left">No</td>
+      <td class="left">A reference to a "preview" representation of the embedded content. Typically, this would a URL to a thumbnail or screenshot image of the content.  </td>
+    </tr>
+    <tr>
+      <td class="left">target</td>
+      <td class="left">
+        <ul>
+        <li>"DEFAULT";</li> 
+        <li>"INLINE"; </li>
+        <li>{Other token value}</li> 
+        </ul>
+      </td>
+      <td class="left">No</td>
+      <td class="left"/>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.4.p.2">In the following example, the "view" action is associated with an "EmbedActionHandler" containing a static fragment of HTML markup: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "EmbedActionHandler",
+        "content": "&lt;div&gt;This is some bit of embedded HTML&lt;/div&gt;",
+        "mediaType": "text/html",
+        "style": {
+          "height": "100px",
+          "width": "100px",
+          "box-shadow": "10px 10px 5px #888888"
+        },
+        "displayName": "Some embedded content",
+        "preview": "http://example.org/preview/123.jpg"
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.4.p.3">Alternatively, the embedded content can be referenced by URL: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "EmbedActionHandler",
+        "url": "http://example.org/foo",
+        "mediaType": "text/html"
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.4.p.4">The mediaType parameter specifies the type of content to be embedded. Consuming applications MAY ignore Embed Action Handlers that specify unrecognized or unsupported mediaTypes.  </p>
+<p>Example:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "EmbedActionHandler",
+        "url": "http://example.org/foo.mpg",
+        "mediaType": "video/mpeg"
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.section.5">5. Intent Action Handler</h2>
+<p id="rfc.section.5.p.1">An Intent Action Handler provides a generic way for the publisher of an Activity object to tell the consuming application to figure out how to handle the action on it's own. The consumer can, for instance, pass the object off to some other native platform application. It is identified using an objectType value of "IntentActionHandler".  </p>
+<p>For example:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "IntentActionHandler",
+        "displayName": "Share This",
+        "context": {
+          "foo": "ABC",
+          "bar": 123
+        }
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.section.6">6. Using "service" and "application" objects as action handlers</h2>
+<p id="rfc.section.6.p.1">The "service" and "application" object are existing objectTypes defined by the Activity Streams 1.0 core schema. While these objects were not originally designed to be used as action handlers, they can be. Specifically, the "service" objectType can be used when the action is to be carried out using some specific third party service interface; the "application" objectType can be used when the action is to be carried out by deferring some some specific native platform application.  </p>
+<p id="rfc.section.6.p.2">For example: </p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "service",
+        "displayName": "My Sharing Service",
+        "url": "http://share.example.org/api"
+      },
+      "save": {
+        "objectType": "application",
+        "displayName": "Read this later!",
+        "platform": "android",
+        "id": "123",
+        "url": "http://play.google.com/..."
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.section.7">7. HTML Form Objects</h2>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">mediaType</td>
+      <td class="left">MIME Media Type</td>
+      <td class="left">No</td>
+      <td class="left">Defaults to "application/x-www-form-urlencoded"</td>
+    </tr>
+    <tr>
+      <td class="left">parameters</td>
+      <td class="left"><a href="#parameters">Parameters Object</a> </td>
+      <td class="left">No</td>
+      <td class="left">Defines the HTML form parameters.</td>
+    </tr>
+  </tbody>
+</table>
+<p>For example:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "HtmlForm",
+          "mediaType": "application/x-www-form-urlencoded",
+          "parameters": {
+            "foo": {
+              "displayName": "Foo",
+              "id": "http://example.org/FooProperty",
+              "type": "http://www.w3.org/2001/XMLSchema#string",
+              "required": True
+            },
+            "bar": {
+              "displayName": "Bar",
+              "id": "http://example.org/BarProperty",
+              "type": "http://www.w3.org/2001/XMLSchema#",
+              "required": True,
+              "value": "Provided Value"
+            }
+          }
+        }
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.section.8">8. Typed Payload Objects</h2>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">mediaType</td>
+      <td class="left">MIME Media Type</td>
+      <td class="left">Yes</td>
+      <td class="left">The MIME Media Type of the Payload</td>
+    </tr>
+    <tr>
+      <td class="left">type</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Type Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">An optional Type Value that describes the payloads semantic type.  </td>
+    </tr>
+    <tr>
+      <td class="left">schema</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Link Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">An optional Link Value whose value(s) describe the structure of the payload data. The value is represented either as a String with a fully qualified IRI, an Activity Stream object, or an Array of IRIs and Objects. If multiple values are provided, they are to be considered mutually exclusive alternatives.  </td>
+    </tr>
+  </tbody>
+</table>
+<p>For example:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "TypedPayload",
+          "mediaType": "text/json",
+        }
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.section.9">9. URL Template Objects</h2>
+<p id="rfc.section.9.p.1">Objects with the "UrlTemplate" object type represent <a href="#RFC6570">[RFC6570]</a> URL Templates.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">template</td>
+      <td class="left">URL Template</td>
+      <td class="left">Yes</td>
+      <td class="left">The <a href="#RFC6570">[RFC6570]</a> URL Template</td>
+    </tr>
+    <tr>
+      <td class="left">parameters</td>
+      <td class="left"><a href="#parameters">Parameters Object</a> </td>
+      <td class="left">No</td>
+      <td class="left">Defines the URL Template parameters</td>
+    </tr>
+  </tbody>
+</table>
+<pre>
+{
+  "objectType": "note",
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
+  "actions": {
+    "review": {
+      "objectType": "UrlTemplate",
+      "template": "http://example.org/foo/123{?rating}",
+      "parameters": {
+        "rating": {
+          "displayName": "Rating",
+          "id": "http://example.org/RatingProperty",
+          "required": True
+        }
+      }
+    }
+  }
+}
+</pre>
+<h2 id="rfc.section.10"><a id="parameters"/>10. Parameters Object</h2>
+<p id="rfc.section.10.p.1">A Parameters Object is used to provide descriptions of the variable inputs of objects such as <a href="#htmlform">HTML Forms</a>  and <a href="#urltemplate">URL Templates</a> . The object is expressed as a JSON dictionary mapping parameter names to <a href="#I-D.snell-activitystreams">Type Values</a>  describing the parameters.  </p>
+<p id="rfc.section.10.p.2">By default, all parameters defined within the object are assumed to be required. When a parameter is described using an Object, the object MAY contained a boolean "required" member. If "required" is false, use of the parameter is assumed to be optional.  </p>
+<p>Using the Parameters Object in UrlTemplate objects:</p>
+<pre>
+  {
+    "objectType": "UrlTemplate",
+    "template": "http://example.org{/foo,bar}"
+    "parameters": {
+      "foo": "http://example.org/FooProperty",
+      "bar": {
+        "id": "http://example.org/BarProperty",
+        "displayName": "Bar",
+        "required": False
+      }
+    }
+  }
+</pre>
+<p>Using the Parameters Object in HtmlForm objects:</p>
+<pre>
+  {
+    "objectType": "HtmlForm",
+    "mediaType": "application/x-www-form-urlencoded",
+    "parameters": {
+      "foo": "http://example.org/FooProperty",
+      "bar": {
+        "objectType": "parameter",
+        "id": "http://example.org/BarProperty",
+        "displayName": "Bar",
+        "required": False
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.10.p.3">This specification defines a <a href="#ParameterObject">Parameter objectType</a>  specifically designed to describe parameters.  </p>
+<p id="rfc.section.10.p.4">Implementations that encounter unrecognized or unexpected objectTypes used to describe parameters will likely be unable to successfully comprehend the parameter and may, therefore, be unable to carry out an Action.  </p>
+<h3 id="rfc.section.10.1"><a id="ParameterObject"/>10.1. Parameter Object</h3>
+<p id="rfc.section.10.1.p.1">The "parameter" objectType is specifically intended for use with the <a href="#parameters">Parameters</a>  object. Each Parameter object provides a rich description of a single parameter.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+  <thead>
+    <tr>
+      <th class="left">Property</th>
+      <th class="left">Value</th>
+      <th class="left">Required</th>
+      <th class="left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="left">required</td>
+      <td class="left">boolean</td>
+      <td class="left">No</td>
+      <td class="left">True if the parameter is required. Defaults to true.</td>
+    </tr>
+    <tr>
+      <td class="left">repeated</td>
+      <td class="left">boolean</td>
+      <td class="left">No</td>
+      <td class="left">True if the parameter can be repeated zero or more times.</td>
+    </tr>
+    <tr>
+      <td class="left">value</td>
+      <td class="left">(Any)</td>
+      <td class="left">No</td>
+      <td class="left">Provides a fixed value for the parameter. When specified, implementations MUST use the specified value.  </td>
+    </tr>
+    <tr>
+      <td class="left">default</td>
+      <td class="left">(Any)</td>
+      <td class="left">No</td>
+      <td class="left">Provides a default value for the parameter. When specified, implementations MUST use the specified value if no other value is not supplied.  </td>
+    </tr>
+    <tr>
+      <td class="left">enum</td>
+      <td class="left">Array of (Any)</td>
+      <td class="left">No</td>
+      <td class="left">Provides a fixed array of possible values for the parameter.  When specified, implementations MUST use one of the specified values.  </td>
+    </tr>
+    <tr>
+      <td class="left">maximum</td>
+      <td class="left">(Any)</td>
+      <td class="left">No</td>
+      <td class="left">A value that is considered to be the upper bound of a range of possible values. This would typically be used only with numeric parameters.  </td>
+    </tr>
+    <tr>
+      <td class="left">minimum</td>
+      <td class="left">(Any)</td>
+      <td class="left">No</td>
+      <td class="left">A value that is considered to be the lower bound of a range of possible values. This would typically be used only with numeric parameters.  </td>
+    </tr>
+    <tr>
+      <td class="left">step</td>
+      <td class="left">Non-negative Number</td>
+      <td class="left">No</td>
+      <td class="left">Specifies the legal numeric interval between acceptable values for the parameter. The step value MUST be a number and MUST conform to the given format if a format is specified. For instance, if format is "uint32", then step=2 would indicate legal values of 0, 2, 4, 6, and so on. The step property MAY be ignored if it's value does not correspond to the expected format.  </td>
+    </tr>
+    <tr>
+      <td class="left">format</td>
+      <td class="left">String</td>
+      <td class="left">No</td>
+      <td class="left">A string that describes the format of the value. The format can be one of the list of standard formats listed below or any other string. If an implementation encounters a format string it does not recognize, the format property MAY be ignored. When not specified, the value format is assumed to be a sequence of UTF-8 encoded codepoints.  </td>
+    </tr>
+    <tr>
+      <td class="left">pattern</td>
+      <td class="left">String</td>
+      <td class="left">No</td>
+      <td class="left">A Regular Expression that describes the structure of the value.  Typically used when the value is a string.  </td>
+    </tr>
+    <tr>
+      <td class="left">placeholder</td>
+      <td class="left"><a href="#I-D.snell-activitystreams">Natural Language Value</a> </td>
+      <td class="left">No</td>
+      <td class="left">An optional Natural Language Value providing a text hint that describes the expected value of the parameter.  </td>
+    </tr>
+  </tbody>
+</table>
+<p id="rfc.section.10.1.p.2">The following common format strings MAY be used as values for the "format" property: </p>
+
+<ul>
+  <li>"boolean" - Specifies that the value is either a string specifying "true" or "false", a boolean True or False, or an integer where 0 represents False and any other value represents True.</li>
+  <li>"byte" - Specifies that the value is a "URL and filename safe" Base64-encoded string of bytes as defined by <a href="#RFC4648">[RFC4648]</a>.  </li>
+  <li>"hex" - Specifies that the value is a String containing a sequence of Hex-encoded bytes.  </li>
+  <li>"date" - Specifies that the value is a "full-date" (YYYY-MM-DD) as defined by <a href="#RFC3339">[RFC3339]</a>.  </li>
+  <li>"date-time" - Specifies that the value is a "date-time" as defined by <a href="#RFC3339">[RFC3339]</a>.  </li>
+  <li>"double" - Specifies that the value is a double-precision 64-bit IEEE 754 floating point value.</li>
+  <li>"duration" - Specifies that the value is a "duration" as defined by <a href="#RFC3339">[RFC3339]</a>.</li>
+  <li>"float" - Specifies that the value is a single-precision 32-bit IEEE 754 floating point.</li>
+  <li>"int32" - Specifies that the value is a signed, 32-bit integer in the range -2,147,483,648 to 2,147,483,647 (inclusive).</li>
+  <li>"int64" - Specifies that the value is a signed, 64-bit integer in the range -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 (inclusive).</li>
+  <li>"uint32" - Specifies that the value is an unsigned 32-bit integer in the range 0 to 4,294,967,295 (inclusive).</li>
+  <li>"uint64" - Specifies that the value is an unsigned 64-bit integer in the range 0 to (2^64)-1 (inclusive)</li>
+  <li>"lang" - Specifies that the value is a Language Tag as defined by <a href="#RFC5646">[RFC5646]</a>.</li>
+  <li>"uri" - Specifies that the value is a string containing a URI as defined by <a href="#RFC3986">[RFC3986]</a>.</li>
+  <li>"iri" - Specifies that the value is a string containing an IRI as defined by <a href="#RFC3987">[RFC3987]</a>.</li>
+</ul>
+
+<p> </p>
+<p>Using the Parameter Object in HtmlForm objects:</p>
+<pre>
+{
+  "objectType": "HtmlForm",
+  "mediaType": "application/x-www-form-urlencoded",
+  "parameters": {
+    "foo": "http://example.org/FooProperty",
+    "bar": {
+      "objectType": "parameter",
+      "id": "http://example.org/BarProperty",
+      "displayName": "Bar",
+      "required": False,
+      "repeated": False,
+      "format": "uint32",
+      "defaultValue": 3,
+      "minimum": 1,
+      "maximum": 5
+    }
+  }
+}
+</pre>
+<h3 id="rfc.section.10.2">10.2. Using UrlTemplate and TypedPayload objects as parameter descriptions</h3>
+<p id="rfc.section.10.2.p.1">In certain cases, when the value of a parameter is expected to be either a URI or IRI, the <a href="#urltemplate">UrlTemplate objectType</a>  MAY be used as the parameter description. In such cases, the "required", "repeated", "default" and "placeholder" properties from the <a href="#ParameterObject">Parameter objectType</a>  can be used as additional properties within the UrlTemplate object.  </p>
+<p id="rfc.section.10.2.p.2">For example: </p>
+<pre>
+{
+  "objectType": "HtmlForm",
+  "mediaType": "application/x-www-form-urlencoded",
+  "parameters": {
+    "foo": "http://example.org/FooProperty",
+    "bar": {
+      "objectType": "UrlTemplate",
+      "id": "http://example.org/BarProperty",
+      "template": "http://example.org{/foo}",
+      "parameters": {
+        "foo": "http://example.org/#string"
+      },
+      "displayName": "Bar",
+      "required": False,
+      "repeated": False
+    }
+  }
+}
+</pre>
+<p id="rfc.section.10.2.p.3">Likewise, when the value of a parameter is expected to be an instance of a specific MIME media type, the <a href="#typedPayload">TypedPayload objectType</a>  can be used.  </p>
+<pre>
+{
+  "objectType": "HtmlForm",
+  "mediaType": "multipart/form-data",
+  "parameters": {
+    "file": {
+      "objectType": "TypedPayload",
+      "mediaType": "image/*",
+      "required": True,
+      "repeated": True
+    }
+  }
+}
+</pre>
+<h2 id="rfc.section.11"><a id="authentication"/>11. Authentication Object</h2>
+<p id="rfc.section.11.p.1">An Authentication Object is used by Action Handlers that require specific authentication options to be supported in order to carry out the Action. The object is expresed as a JSON dictionary mapping authentication schema labels to JSON dictionaries that provide a specific description of properties and requirements specific to the scheme.  </p>
+<p>Example Authentication details:</p>
+<pre>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note",
+    "actions": {
+      "view": {
+        "objectType": "HttpActionHandler",
+        "method": "GET",
+        "url": "http://example.org/notes/1",
+        "auth": {
+          "basic": {
+            "realm": "http://example.org"
+          },
+          "oauth": {
+            "scopes": [
+              "some.oauth.scope",
+              "another.oauth.scope"
+            ]
+          }
+        }
+      }
+    }
+  }
+</pre>
+<p id="rfc.section.11.p.2">This specification does not define the authentication schemes or their associated properties. Unrecognized authentication schemes MAY be ignored. However, if an implementation fails to recognize any of the authentication schemes specified by an Action Handler, it might not be possible to successfully carry out the Action.  </p>
+<h2 id="rfc.section.12"><a id="stylesobject"/>12. Styles Object</h2>
+<p id="rfc.section.12.p.1">A Styles Object is used by EmbedActionHandlers to provide CSS style hints for the container within which embedded content is to be displayed. The object is expressed as either a single JSON dictionary object mapping CSS property names to appropriate CSS values, or an array of JSON dictionary objects.  An optional "media" member can be included within the dictionary providing a CSS Media Query.  </p>
+<p>Example style hints:</p>
+<pre>
+{
+  "objectType": "note",
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
+  "actions": {
+    "view": {
+      "objectType": "EmbedActionHandler",
+      "content": "Some plain text content",
+      "mediaType": "text/plain",
+      "style": {
+        "height": "100px",
+        "width": "100px",
+        "box-shadow": "10px 10px 5px #888888"
+      }
+    }
+  }
+}
+</pre>
+<p>Multiple style hints for specific media query targets:</p>
+<pre>
+{
+  "objectType": "note",
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
+  "actions": {
+    "view": {
+      "objectType": "EmbedActionHandler",
+      "content": "Some plain text content",
+      "mediaType": "text/plain",
+      "style": [
+        {
+          "media": "print",
+          "height": "100px",
+          "width": "100px",
+          "box-shadow": "10px 10px 5px #888888"
+        },
+        {
+          "media": "screen and (orientation: landscape)",
+          "height": "100px",
+          "width": "100px",
+          "box-shadow": "10px 10px 5px #888888"
+        }
+      ]
+    }
+  }
+}
+</pre>
+<h2 id="rfc.section.13">13. Security Considerations</h2>
+<p id="rfc.section.13.p.1">TBD</p>
+<h2 id="rfc.section.14">14. IANA Considerations</h2>
+<p id="rfc.section.14.p.1">TBD</p>
+<h2 id="rfc.references">15. Normative References</h2>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="I-D.snell-activitystreams">[I-D.snell-activitystreams]</b>
+      </td>
+      <td class="top"><a>Snell, J.</a>, "<a href="http://tools.ietf.org/html/draft-snell-activitystreams-05">JSON Activity Streams 2.0</a>", Internet-Draft draft-snell-activitystreams-05, November 2013.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC2119">[RFC2119]</b>
+      </td>
+      <td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, March 1997.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC3339">[RFC3339]</b>
+      </td>
+      <td class="top"><a href="mailto:GK@ACM.ORG" title="Clearswift Corporation">Klyne, G.</a> and <a href="mailto:chris.newman@sun.com" title="Sun Microsystems">C. Newman</a>, "<a href="http://tools.ietf.org/html/rfc3339">Date and Time on the Internet: Timestamps</a>", RFC 3339, July 2002.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC3986">[RFC3986]</b>
+      </td>
+      <td class="top"><a href="mailto:timbl@w3.org" title="World Wide Web Consortium">Berners-Lee, T.</a>, <a href="mailto:fielding@gbiv.com" title="Day Software">Fielding, R.</a> and <a href="mailto:LMM@acm.org" title="Adobe Systems Incorporated">L. Masinter</a>, "<a href="http://tools.ietf.org/html/rfc3986">Uniform Resource Identifier (URI): Generic Syntax</a>", STD 66, RFC 3986, January 2005.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC3987">[RFC3987]</b>
+      </td>
+      <td class="top"><a>Duerst, M.</a> and <a>M. Suignard</a>, "<a href="http://tools.ietf.org/html/rfc3987">Internationalized Resource Identifiers (IRIs)</a>", RFC 3987, January 2005.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC4648">[RFC4648]</b>
+      </td>
+      <td class="top"><a>Josefsson, S.</a>, "<a href="http://tools.ietf.org/html/rfc4648">The Base16, Base32, and Base64 Data Encodings</a>", RFC 4648, October 2006.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC5646">[RFC5646]</b>
+      </td>
+      <td class="top"><a>Phillips, A.</a> and <a>M. Davis</a>, "<a href="http://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a>", BCP 47, RFC 5646, September 2009.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC6570">[RFC6570]</b>
+      </td>
+      <td class="top"><a>Gregorio, J.</a>, <a>Fielding, R.</a>, <a>Hadley, M.</a>, <a>Nottingham, M.</a> and <a>D. Orchard</a>, "<a href="http://tools.ietf.org/html/rfc6570">URI Template</a>", RFC 6570, March 2012.</td>
+    </tr>
+  </tbody>
+</table>
+<h2 id="rfc.appendix.A">Appendix A. Using Action Handlers From Other Vocabularies</h1>
+<p id="rfc.section.A.p.1">The Activity Streams 2.0 Actions mechanism is specifically designed to allow Action Handlers from multiple vocabularies.  </p>
+<h3 id="rfc.appendix.A.1">A.1. Schema.org Actions Proposal</h1>
+<p id="rfc.section.A.1.p.1">Based on http://www.w3.org/wiki/images/b/b9/Actionsinschema.org.pdf:</p>
+<pre>
+  {
+    "objectType": "video",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "watch": [
+        {
+          "objectType": "http://schema.org/WebPageHandler",
+          "url": "http://movies.example.com/player?id=123" 
+        },
+        {
+          "objectType": "http://schema.org/AndroidHandler",
+          "url": "http://movies.example.com/player?id=123",
+          "package": "com.movies"
+        }
+      ]
+    }
+  }
+</pre>
+<h3 id="rfc.appendix.A.2">A.2. Google's "Actions in the Inbox"</h3>
+<p id="rfc.section.A.2.p.1">Based on https://developers.google.com/gmail/actions/reference/review-action:</p>
+<pre>      
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "http://schema.org/ReviewAction",
+        "review": {
+          "objectType": "http://schema.org/Review",
+          "itemReviewed": {
+            "objectType": "http://schema.org/FoodEstablishment",
+            "name": "Joe's Diner"
+          },
+          "reviewRating": {
+            "objectType": "http://schema.org/Rating",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        },
+        "handler": {
+          "objectType": "http://schema.org/HttpActionHandler",
+          "url": "http://reviews.com/review?id=123",
+          "requiredProperty": {
+            "objectType": "http://schema.org/Property",
+            "name": "review.reviewRating.ratingValue"
+          },
+          "method": "http://schema.org/HttpRequestMethod/POST"
+        }
+      }
+    }
+  }
+</pre>
+<h3 id="rfc.appendix.A.3">A.3. Mixing Vocabularies</h3>
+<pre>
+  {
+    "objectType": "video",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "watch": [
+        {
+          "objectType": "HttpActionHandler",
+          "url": "http://movies.example.com/player?id=123", 
+          "target": "NEW"
+        },
+        {
+          "objectType": "http://schema.org/AndroidHandler",
+          "url": "http://movies.example.com/player?id=123",
+          "package": "com.movies"
+        }
+      ]
+    }
+  }
+</pre>
+<h3 id="rfc.appendix.A.4">A.4. Example Drawing From Multiple Vocabularies</h3>
+<pre>
+  {
+    "objectType": "video",
+    "displayName": "A Movie!",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "watch": [
+        {
+          "objectType": "EmbedActionHandler",
+          "displayName": "HD",
+          "mediaType": "video/mpeg",
+          "url": "http://cdn.example.org?id=123amp;fmt=HD",
+        },
+        {
+          "objectType": "EmbedActionHandler",
+          "displayName": "SD",
+          "mediaType": "video/mpeg",
+          "url": "http://cdn.example.org?id=123&amp;fmt=SD",
+        },
+        {
+          "objectType": "application",
+          "displayName": "Watch on Netflix",
+          "url": "http://netflix.com..."
+        }
+      ],
+      "like": {
+        "objectType": "EmbedActionHandler",
+        "mediaType": "text/html",
+        "url": "http://www.facebook.com/plugins/like.php...",
+        "style": {
+          "width": "150px",
+          "height": "50px"
+        }
+      },
+      "share": [
+        {
+          "objectType": "HttpActionHandler",
+          "displayName": "Twitter",
+          "url": "https://twitter.com/share?url=...",
+          "target": "DIALOG"
+        },
+        {
+          "objectType": "HttpActionHandler",
+          "displayName": "Facebook",
+          "url": "https://www.facebook.com/sharer/sharer.php?u=...",
+          "target": "DIALOG"
+        }
+      ],
+      "save": [
+        {
+          "objectType": "service",
+          "id": "http://getpocket.com",
+          "displayName": "Pocket",
+          "context": {
+            "url": "http://example.org/movie?id=123",
+            "title": "A Movie!",
+            "tags": "foo, bar, baz"
+          }
+        },
+        {
+          "objectType": "service",
+          "id": "http://instapaper.com",
+          "displayName": "Instapaper",
+          "context": {
+            "url": "http://example.org/movie?id=123",
+            "title": "A Movie!",
+            "selection": "An action movie!"
+          }
+        }
+      ],
+      "review": {
+        "objectType": "HttpActionHandler",
+        "displayName": "Rate this movie!",
+        "url": "http://review.example.org/movie?id=123",
+        "method": "POST",
+        "expects": {
+          "objectType": "HtmlForm",
+          "mediaType": "application/x-www-form-urlencoded",
+          "parameters": {
+            "rating": {
+              "id": "http://schema.org/ratingValue",
+              "maximum": 5,
+              "minimum": 0,
+              "format": "uint32",
+              "displayName": "Rating",
+              "required": true
+            },
+            "comments": {
+              "id": "http://schema.org/commentText",
+              "displayName": "Comments",
+              "required": "false"
+            }
+          }
+        }
+      }
+    }
+  }
+</pre>
+<h2 id="rfc.authors">Authors' Addresses</h2>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">James M Snell</span> 
+	</span>
+	<span class="org vcardline">IBM</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:jasnell@gmail.com">jasnell@gmail.com</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Matthew Marum</span> 
+	</span>
+	<span class="org vcardline">SugarCRM</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:mgmarum@gmail.com">mgmarum@gmail.com</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>
