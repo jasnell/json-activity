@@ -1,0 +1,1432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type='text/xsl' href='./rfc2629.xslt' ?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+  <!ENTITY rfc2119 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml'>
+  <!ENTITY rfc6570 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.6570.xml'> 
+  <!ENTITY as2 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-snell-activitystreams-07.xml'>
+  <!ENTITY xsd PUBLIC '' 'http://xml.resource.org/public/bibxml-w3c/reference.W3C.REC-xmlschema-2-20041028.xml'>
+]>
+
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-actions-05" >
+  <front>
+    <title abbrev="ActivityStreams">JSON Activity Streams 2.0 - Action Handlers</title>
+
+    <author fullname="James M Snell" initials="J." surname="Snell">
+      <organization>IBM</organization>
+      <address> 
+        <email>jasnell@gmail.com</email> 
+      </address> 
+    </author>
+    
+    <author fullname="Matthew Marum" initials="M." surname="Marum">
+      <organization>SugarCRM</organization>
+      <address>
+        <email>mgmarum@gmail.com</email>
+      </address>
+    </author>
+
+    <date month="May" year="2014" />
+    <area>General</area> 
+    <workgroup>Activity Streams (http://activitystrea.ms)</workgroup>
+    <keyword>JSON</keyword>
+    <keyword>Activity Streams</keyword>
+
+    <abstract>
+      <t>
+        This specification defines Action Handlers for use with 
+        the Activity Streams 2.0 format.
+      </t>
+    </abstract>
+    
+    <note title="Author's Note">
+      <t>
+        Note that this document is a work-in-progress draft specification
+        that does not yet represent a "standard". It is the intention of 
+        this specification to propose a few new ideas and openly solicit 
+        feedback on their definition and use. While this document might 
+        eventually evolve into an RFC the ideas described herein have not 
+        yet been broadly implemented and have definitions that will evolve
+        through successive iterations of this draft.
+      </t>
+    </note>
+    
+  </front>
+
+  <middle>
+
+    <section anchor="overview" title="Overview">
+      <t>
+        The Activity Streams 2.0 <xref target="I-D.snell-activitystreams" />
+        specification introduces the notion of "actions" that can be 
+        associated with objects. Using the "actions" property described 
+        in Sections 3.6 and 3.6.1 of the Activity Streams 2.0 document,
+        the producer of an object can declare a specific set of verbs 
+        appropriate for the object and map each of those to one or more
+        objects ("action handlers") or resources capable of "carrying out" 
+        the verb. This document expands on that mechanism by defining and 
+        describing a core set of action handler object types.
+      </t>
+      
+    </section>
+    
+    <section anchor="actionhandler" title="Action Handlers">
+      
+      <t>
+        An action handler is an Activity Streams 2.0 object whose objectType
+        and member properties instruct a consuming application how to carry
+        out the verb the action handler has been associated with. For instance,
+        given the following example:
+      </t>
+      
+      <figure><artwork>
+  {
+    "objectType": "note",
+    "displayName": "Title of the note",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "HttpActionHandler",
+        "url": "http://example.org/share"
+      },
+      "like": {
+        "objectType": "EmbedActionHandler",
+        "mediaType": "text/plain",
+        "content": "Hello World"
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        The "note" object has two declared actions, "share" and "like". Each
+        of those is associated with one action handler object. The "share" 
+        action has a action handler of type "HttpActionHandler", while the 
+        "like" action has an "EmbedActionHandler".
+      </t>
+      
+      <t>
+        As illustrated in the example, action handlers are represented as 
+        Activity Streams 2.0 objects. All such objects share a common set
+        of base member properties as defined in the following table:
+      </t>
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+        
+        <c>confirm</c>
+        <c>Boolean</c>
+        <c>
+          True if the consuming application ought to seek
+          confirmation prior to using the action handler to carry out
+          it's associated action. Defaults to False.
+        </c>
+        
+        <c>context</c>
+        <c>JSON Object</c>
+        <c>
+          Contextual information associated with the action 
+          handler, represented as a JSON Object without any particular
+          structure. How the context is used is dependent
+          entirely on the action handler definition and on how a
+          consuming application chooses to implement the action handler.
+        </c>
+        
+        <c>expects</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>
+          For action handlers with a distinct input requirement 
+          (e.g. HttpActionHandler), the expects property provides 
+          a description of the expected input. The value is expressed
+          as either a String containing a fully qualified IRI, an 
+          Activity Stream Object, or an Array of IRI's or Objects. 
+          When multiple values are provided, they MUST be considered
+          as mutually exclusive alternatives.
+        </c>
+        
+        <c>returns</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>
+          For action handlers with a distinct output, the returns
+          property provides a description of the expected output.
+          The value is expressed as either a String containing a 
+          fully qualified IRI, an Activity Stream Object, or an 
+          Array of IRI's or Objects. When multiple values are provided,
+          they MUST be considered as mutually exclusive alternatives.
+        </c>
+        
+        <c>auth</c>
+        <c><xref target="authentication">Authentication Value</xref></c>
+        <c>
+          For action handlers with specific authentication requirements,
+          the "auth" property provides information about the specific 
+          authentication mechanisms supported.
+        </c>
+        
+        <c>requires</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>
+          An optional Link Value whose value(s) describe features or behaviors
+          an implementation MUST support in order to carry out the action. 
+          Requirements are designed to be intentionally open-ended and will vary 
+          depending on specific Action Handler type. Any implementation that 
+          does not support any specified required feature MUST ignore the 
+          Action Handler.
+        </c>
+        
+        <c>prefers</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>
+          An optional Link Value whose value(s) describe features or behaviors
+          an implementation SHOULD support in order to carry out the action. 
+          Requirements are designed to be intentionally open-ended and will vary 
+          depending on specific Action Handler type. Any implementation that 
+          does not support any specified preferred feature MAY ignore the 
+          feature.
+        </c>
+        
+      </texttable>
+      
+      <t>
+        This specification defines three specific base types of action 
+        handler:
+        <list style="symbols">
+          <t><xref target="httpactionhandler">The HTTP Action Handler</xref>,</t>
+          <t><xref target="embedactionhandler">The Embed Action Handler</xref>, and</t>
+          <t><xref target="intentactionhandler">The Intent Action Handler</xref>.</t>
+        </list>
+      </t>
+      
+      <t>
+        Implementations are free to use Activity Stream objects of any 
+        objectType as an action handler. Consuming applications MAY ignore 
+        any object it encounters that use objectTypes that are not 
+        recognized or supported as action handlers. Alternatively, the 
+        consuming application MAY treat such objects as implied
+        <xref target="intentactionhandler">Intent Action Handlers</xref>.
+      </t>
+      
+      <t>
+        Multiple independent action handlers can be associated with any 
+        single verb using a JSON Array. The ordering of objects within 
+        such an array is not considered to be significant.
+      </t>
+      
+      <t>
+        For example, in the following, the "share" action has two 
+        associated action handlers:
+      </t>
+      
+      <figure><artwork><![CDATA[
+  {
+    "objectType": "event",
+    "displayName": "Party!",
+    "content": "We're going to party like it's 1999!",
+    "id": "urn:example:events:123",
+    "actions": {
+      "share": [
+        {
+          "objectType": "HttpActionHandler",
+          "method": "POST",
+          "url": "http://example.org/share-this/123",
+          "target": "DIALOG",
+          "returns": {
+            "objectType": "TypedPayload",
+            "mediaType": "text/html"
+          }
+        },
+        {
+          "objectType": "EmbedActionHandler",
+          "mediaType": "text/html",
+          "content": "<div>...</div>"
+        }
+      ]  
+    }
+  }
+      ]]></artwork></figure>
+      
+    </section>
+    
+    <section anchor="httpactionhandler" title="HTTP Action Handler">
+      
+      <t>
+        An HTTP Action Handler describes an HTTP request/response flow
+        that is used to carry out an action. It is identified using 
+        an objectType value of "HttpActionHandler".
+      </t>
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+        
+        <c>url</c>
+        <c>Link Value</c>
+        <c>
+          Specifies the HTTP or HTTPS URL to which the HTTP request 
+          is directed.
+        </c>
+        
+        <c>method</c>
+        <c>HTTP Method String (e.g. "GET", "POST", "PUT", etc)</c>
+        <c>The HTTP method to use. Defaults to "GET"</c>
+        
+        <c>target</c>
+        <c>
+          "DEFAULT" - Consumer defined default; 
+          "NONE" - No navigation or UI context (e.g. a hidden HTTP action 
+          that does not result in the creation or use of a browser window); 
+          "NEW" - A new navigation or UI context (e.g. show the results of
+          the HTTP request in a browser window or tab.); 
+          "CURRENT" - Reuse the existing navigation or UI context (e.g. show
+          the results of the HTTP request in an existing browser window or
+          tab.); 
+          {Other token value} - Any other TOKEN value. Interpretation and 
+          support of such extension tokens is dependent on the consuming 
+          application. Unknown or unsupported values MUST be ignored.</c>
+        <c>
+          Specifies the intended target of the HTTP action.
+          This determines whether the action results in a new navigation
+          context (e.g. new browser window) or whether the action is 
+          "hidden". When not specified, defaults to "DEFAULT", meaning
+          that the consuming application is free to determine an appropriate
+          target context.
+        </c>
+      </texttable>
+      
+      <figure><preamble>For example:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "HttpActionHandler",
+        "url": "http://example.org/foo",
+        "method": "GET"
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        As a shortcut, HttpActionHandlers that use the "GET" method and 
+        a "DEFAULT" target can be specified using a JSON string containing
+        the absolute URL. For instance:
+      </t>
+      
+      <figure><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": "http://example.org/foo"
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        In the Activity Streams 2.0 format, the "url" property is defined
+        as a "Link Value", this means that it is possible for the value of
+        the "url" property to be an Activity Stream object that a consuming
+        application can use to resolve the actual target URL. This specification
+        defines a new <xref target="urltemplate">UrlTemplate</xref> objectType
+        specifically intended for such use.
+      </t>
+      
+      <t>
+        The UrlTemplate object can be used within an HTTP Action Handler, 
+        for instance, whenever carrying out the HTTP request requires 
+        the construction of a new URL that includes variable parameters:
+      </t>
+      
+      <figure><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "url": {
+          "objectType": "UrlTemplate",
+          "template": "http://example.org/note/123{?rating}",
+          "parameters": {
+            "rating": {
+              "displayName": "Rating",
+              "maxInclusive": 5,
+              "minInclusive": 1,
+              "type": "unsignedInt"
+            }
+          }
+        },
+        "method": "POST",
+        "target": "NEW"
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        If the intended HTTP request uses the GET method and DEFAULT target,
+        the UrlTemplate object itself can be used directly as the action 
+        handler.
+      </t>
+      
+      <figure><preamble>"GET" HttpActionHandler shortcut using a URL Template:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "UrlTemplate",
+        "template": "http://example.org/note/{noteid}",
+        "parameters": {
+          "noteid": {
+            "type": "nonNegativeInteger",
+            "totalDigits": 5
+          }
+        }
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        If the HTTP request requires an input payload, the HttpActionHandler
+        object can contain an "expects" property. The value of "expects" is 
+        an Activity Streams 2.0 "Link Value" represented either as a simple
+        JSON string containing a fully qualified IRI, an Activity Stream
+        object, or an array of IRI's or Objects. This specification defines a 
+        new <xref target="htmlform">HtmlForm</xref> objectType to be used 
+        whenever the input of the HTTP request is an HTML Form POST. A new
+        <xref target="typedPayload">TypedPayload</xref> objectType is defined
+        for use whenever the input is an arbitrary MIME media type.
+      </t>
+      
+      <t>
+        For example, the following describes an HTML Form post with a 
+        single "foo" parameter submitted using the 
+        "application/x-www-form-urlencoded" format:
+      </t>
+      
+      <figure><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "HtmlForm",
+          "mediaType": "application/x-www-form-urlencoded",
+          "parameters": {
+            "foo": {
+              "type": "string",
+              "displayName": "Foo Property"
+            }
+          }
+        }
+      }
+    }
+  }
+      </artwork></figure>
+            
+    </section>
+    
+    <section anchor="embedactionhandler" title="Embed Action Handler">
+      
+      <t>
+        An Embed Action Handler defines static or dynamic content
+        to be visually rendered to carry out an action. Examples
+        of embeds can include static HTML, images, videos,
+        gadgets and applications. It is identified using an objectType 
+        value of "EmbedActionHandler".
+      </t>
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+        
+        <c>url</c>
+        <c>Link Value</c>
+        <c>
+          The URL from which to retrieve the content for this embed.
+        </c>
+        
+        <c>content</c>
+        <c>String</c>
+        <c>
+          The character based "static" content to be embeded. The "mediaType"
+          parameter specifies the MIME media type of the content.
+        </c>
+        
+        <c>mediaType</c>
+        <c>MIME Media Type</c>
+        <c>The MIME Media Type of the embedded content.</c>
+        
+        <c>style</c>
+        <c><xref target="stylesobject">Styles Object</xref></c>
+        <c>
+          Visual CSS styling hints to apply to the element containing
+          the embedded content.
+        </c>
+        
+        <c>preview</c>
+        <c>Link Value</c>
+        <c>
+          A reference to a "preview" representation of the embedded 
+          content. Typically, this would a URL to a thumbnail or 
+          screenshot image of the content.
+        </c>
+
+        <c>target</c>
+        <c>
+          "DEFAULT";  
+          "INLINE"; 
+          {Other token value}
+        </c>
+        <c></c>
+        
+      </texttable>
+      
+      <t>
+        In the following example, the "view" action is associated with
+        an "EmbedActionHandler" containing a static fragment of HTML 
+        markup:
+      </t>
+      
+      <figure><artwork><![CDATA[
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "EmbedActionHandler",
+        "content": "<div>This is some bit of embedded HTML</div>",
+        "mediaType": "text/html",
+        "style": {
+          "height": "100px",
+          "width": "100px",
+          "box-shadow": "10px 10px 5px #888888"
+        },
+        "displayName": "Some embedded content",
+        "preview": "http://example.org/preview/123.jpg"
+      }
+    }
+  }
+      ]]></artwork></figure>
+      
+      <t>
+        Alternatively, the embedded content can be referenced by URL:
+      </t>
+      
+      <figure><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "EmbedActionHandler",
+        "url": "http://example.org/foo",
+        "mediaType": "text/html"
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        The mediaType parameter specifies the type of content to be 
+        embedded. Consuming applications MAY ignore Embed Action Handlers
+        that specify unrecognized or unsupported mediaTypes.
+      </t>
+      
+      <figure><preamble>Example:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "view": {
+        "objectType": "EmbedActionHandler",
+        "url": "http://example.org/foo.mpg",
+        "mediaType": "video/mpeg"
+      }
+    }
+  }
+      </artwork></figure>
+                  
+    </section>
+    
+    <section anchor="intentactionhandler" title="Intent Action Handler">
+      
+      <t>
+        An Intent Action Handler provides a generic way for the publisher
+        of an Activity object to tell the consuming application to figure
+        out how to handle the action on it's own. The consumer can, for 
+        instance, pass the object off to some other native platform 
+        application. It is identified using an objectType value of 
+        "IntentActionHandler".
+      </t>
+
+      <figure><preamble>For example:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "IntentActionHandler",
+        "displayName": "Share This",
+        "context": {
+          "foo": "ABC",
+          "bar": 123
+        }
+      }
+    }
+  }
+      </artwork></figure>
+            
+    </section>
+    
+    <section anchor="serviceapplication" title="Using &quot;service&quot; and &quot;application&quot; objects as action handlers">
+      
+      <t>
+        The "service" and "application" object are existing objectTypes 
+        defined by the Activity Streams 1.0 core schema. While these 
+        objects were not originally designed to be used as action handlers,
+        they can be. Specifically, the "service" objectType can be used 
+        when the action is to be carried out using some specific third party
+        service interface; the "application" objectType can be used when
+        the action is to be carried out by deferring some some specific
+        native platform application.
+      </t>
+      
+      <t>
+        For example:
+      </t>
+      
+      <figure><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "share": {
+        "objectType": "service",
+        "displayName": "My Sharing Service",
+        "url": "http://share.example.org/api"
+      },
+      "save": {
+        "objectType": "application",
+        "displayName": "Read this later!",
+        "platform": "android",
+        "id": "123",
+        "url": "http://play.google.com/..."
+      }
+    }
+  }
+      </artwork></figure>
+
+    </section>
+    
+    <section anchor="htmlform" title="HTML Form Objects">
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+        <c>mediaType</c>
+        <c>MIME Media Type</c>
+        <c>Defaults to "application/x-www-form-urlencoded"</c>
+        <c>parameters</c>
+        <c><xref target="parameters">Parameters Object</xref></c>
+        <c>Defines the HTML form parameters.</c>
+      </texttable>
+      
+      <figure><preamble>For example:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "HtmlForm",
+          "mediaType": "application/x-www-form-urlencoded",
+          "parameters": {
+            "foo": {
+              "displayName": "Foo",
+              "type": "string",
+              "placeholder": "Foo"
+            },
+            "bar": {
+              "type": "string",
+              "value": "Provided Value"
+            }
+          }
+        }
+      }
+    }
+  }
+      </artwork></figure>
+  
+      <t>Is roughly equivalent to the following HTML form:</t>
+
+      <figure><artwork><![CDATA[
+  <form method="post" action="http://example.org/foo">
+    <label for="foo">Foo:</label>
+    <input id="foo" name="foo" type="input" placeholder="Foo" />
+    <input name="bar" type="hidden" value="Provided Value" />
+    <input type="submit" />
+  </form>
+]]></artwork></figure>
+      
+    </section>  
+    
+    <section anchor="typedPayload" title="Typed Payload Objects">
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+        <c>mediaType</c>
+        <c>MIME Media Type</c>
+        <c>The MIME Media Type of the Payload</c>
+        <c>type</c>
+        <c><xref target="I-D.snell-activitystreams">Type Value</xref></c>
+        <c>
+          An optional Type Value that describes the payloads semantic type.
+        </c>
+        <c>schema</c>
+        <c><xref target="I-D.snell-activitystreams">Link Value</xref></c>
+        <c>
+          An optional Link Value whose value(s) describe the structure of the
+          payload data. The value is represented either as a String with 
+          a fully qualified IRI, an Activity Stream object, or an Array of 
+          IRIs and Objects. If multiple values are provided, they are to be
+          considered mutually exclusive alternatives. 
+        </c>
+      </texttable>
+      
+      <figure><preamble>For example:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "HttpActionHandler",
+        "method": "POST",
+        "url": "http://example.org/foo",
+        "expects": {
+          "objectType": "TypedPayload",
+          "mediaType": "text/json",
+        }
+      }
+    }
+  }
+      </artwork></figure>
+      
+    </section> 
+    
+    <section anchor="urltemplate" title="URL Template Objects">
+      
+      <t>
+        Objects with the "UrlTemplate" object type represent
+        <xref target="RFC6570"/> URL Templates.
+      </t>
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+        <c>template</c>
+        <c>URL Template</c>
+        <c>The <xref target="RFC6570"/> URL Template</c>
+        <c>parameters</c>
+        <c><xref target="parameters">Parameters Object</xref></c>
+        <c>Defines the URL Template parameters</c> 
+      </texttable>  
+      
+      <figure><artwork>
+{
+  "objectType": "note",
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
+  "actions": {
+    "review": {
+      "objectType": "UrlTemplate",
+      "template": "http://example.org/notes/{noteid}",
+      "parameters": {
+        "noteid": {
+          "type": "nonNegativeInteger",
+          "totalDigits": 5
+        }
+      }
+    }
+  }
+}
+      </artwork></figure>
+
+      <t>
+        If the given URL template includes any parameter tokens that 
+        do not appear within the "parameters" property, the parameter
+        value type is assumed to be a UTF-8 encoded xsd:string with 
+        no maximum length.
+      </t>
+      
+    </section> 
+    
+    <section anchor="parameters" title="Parameters Object">
+
+      <t>
+        A Parameters Object is used to provide descriptions of the variable
+        inputs of objects such as <xref target="htmlform">HTML Forms</xref> 
+        and <xref target="urltemplate">URL Templates</xref>. The object is 
+        expressed as a JSON dictionary mapping parameter names to 
+        parameter descriptions which take the form of either an 
+        <xref target="W3C.REC-xmlschema-2-20041028">XML Schema type name</xref>, 
+        an absolute IRI, a <xref target="ParameterObject">parameter object</xref>,
+        or in some limited cases, TypedPayload or UrlTemplate objects.
+      </t>
+      
+      <t>
+        By default, all parameters are assumed to be
+        required. When a parameter is described using an object, the object 
+        MAY contain a boolean "required" member. If "required" is false, 
+        use of the parameter is assumed to be optional.
+      </t>
+      
+      <figure><preamble>Using the Parameters Object in UrlTemplate objects:</preamble><artwork>
+  {
+    "objectType": "UrlTemplate",
+    "template": "http://example.org{/foo,bar}"
+    "parameters": {
+      "foo": "string",
+      "bar": {
+        "type": "string",
+        "required": false
+      }
+    }
+  }
+      </artwork></figure>
+
+      <t>
+        In this example, both the "foo" and "bar" parameter conform to the 
+        XML Schema type "xsd:string". The "foo" parameter is required while
+        the "bar" parameter is optional.
+      </t>
+      
+      <figure><preamble>Using the Parameters Object in HtmlForm objects:</preamble><artwork>
+  {
+    "objectType": "HtmlForm",
+    "mediaType": "application/x-www-form-urlencoded",
+    "parameters": {
+      "foo": {
+        "displayName": "Foo",
+        "type": "string"
+      },
+      "bar": {
+        "displayName": "Bar",
+        "type": "string",
+        "required": false
+      }
+    }
+  }
+      </artwork></figure>
+    
+    <section anchor="ParameterObject" title="The Parameter Object">
+      
+      <t>
+        Parameter objects provide a rich description of a single parameter 
+        in a manner that is aligned with the commonly used 
+        <xref target="W3C.REC-xmlschema-2-20041028">XML Schema type system</xref>.
+      </t>
+      
+      <texttable>
+        <ttcol>Property</ttcol>
+        <ttcol>Value</ttcol>
+        <ttcol>Description</ttcol>
+
+        <c>displayName</c>
+        <c><xref target="I-D.snell-activitystreams">Natural Language Value</xref></c>
+        <c>An Activity Streams 2.0 Natural Language Value.</c>
+
+        <c>required</c>
+        <c>boolean</c>
+        <c>True if the parameter is required. Defaults to true.</c>
+        
+        <c>repeated</c>
+        <c>boolean</c>
+        <c>True if the parameter can be repeated zero or more times. Defaults to false.</c> 
+        
+        <c>value</c>
+        <c>(Any)</c>
+        <c>
+          Provides a fixed value for the parameter. When specified, 
+          implementations MUST use the specified value.
+        </c>
+        
+        <c>default</c>
+        <c>(Any)</c>
+        <c>
+          Provides a default value for the parameter. When specified,
+          implementations MUST use the specified value if no other
+          value is not supplied.
+        </c>
+
+        <c>type</c>
+        <c><xref target="W3C.REC-xmlschema-2-20041028">XSD</xref> type name or IRI</c>
+        <c>
+          Identifies the value type using either an 
+          <xref target="W3C.REC-xmlschema-2-20041028">XML Schema</xref> simple 
+          type name or an absolute IRI. If an implementation encounters a type 
+          it does not recognize, the property MAY be ignored. 
+          When not specified, the value type is assumed to be a UTF-8 encoded
+          "xsd:string".
+        </c>
+
+        <c>enumeration</c>
+        <c>Array of (Any)</c>
+        <c>
+          Provides a fixed array of possible values for the parameter. 
+          When specified, implementations MUST use one of the specified 
+          values.
+        </c>
+
+        <c>minLength</c>
+        <c>Non-Negative Integer</c>
+        <c>
+          Specifies the minimum "unit of length" for the value. The "unit of length"
+          depends entirely on the value type as specified by the "type" 
+          property. For instance, For xsd:string, the length is determined by the 
+          number of characters; for xsd:hexBinary, the length is determined by the
+          number of encoded 8-bit octets.  
+        </c>
+
+        <c>maxLength</c>
+        <c>Non-Negative Integer</c>
+        <c>
+          Specifies the maximum "unit of length" for the value. The "unit of length"
+          depends entirely on the value type as specified by the "type" 
+          property. For instance, For xsd:string, the length is determined by the 
+          number of characters; for xsd:hexBinary, the length is determined by the
+          number of encoded 8-bit octets.  
+        </c>
+
+        <c>maxInclusive</c>
+        <c>(Any)</c>
+        <c>
+          A value that is considered to be the inclusive upper bound of a range of 
+          possible values. This would typically be used only with numeric
+          parameters.
+        </c>
+
+        <c>maxExclusive</c>
+        <c>(Any)</c>
+        <c>
+          A value that is considered to be the exclusive upper bound of a range of 
+          possible values. This would typically be used only with numeric
+          parameters.
+        </c>
+
+        <c>minInclusive</c>
+        <c>(Any)</c>
+        <c>
+          A value that is considered to be the inclusive lower bound of a range of
+          possible values. This would typically be used only with numeric
+          parameters.
+        </c>
+
+        <c>minExclusive</c>
+        <c>(Any)</c>
+        <c>
+          A value that is considered to be the exclusive lower bound of a range of
+          possible values. This would typically be used only with numeric
+          parameters.
+        </c>
+
+        <c>step</c>
+        <c>Non-negative Number</c>
+        <c>
+          Specifies the legal numeric interval between acceptable values 
+          for the parameter. The step value MUST be a number and MUST 
+          conform to the specified type. For instance,
+          if type is "unsignedInt", then step=2 would indicate legal values of
+          0, 2, 4, 6, and so on. The step property MAY be ignored if it's 
+          value does not correspond to the expected type.
+        </c>
+
+        <c>totalDigits</c>
+        <c>Non-negative integer</c>
+        <c>
+         Specifies the maximum number of digits (integer and fractional) that can be 
+         included in numeric values. The totalDigits property MUST be ignored
+         if the value type identified by the type property is not a numeric
+         type.
+        </c>
+
+        <c>fractionDigits</c>
+        <c>Non-negative integer</c>
+        <c>
+          Specifies the maximum number of fractional digits that can be 
+          included in numeric values. The fractionDigits property MUST be
+          ignored if the value type identified by the type property is not
+          a numeric type.
+        </c>
+
+        <c>pattern</c>
+        <c>String or Array of Strings</c>
+        <c>
+          One or more Regular Expressions that describe the acceptable structure 
+          of the value. Typically used when the value is a string. Multiple 
+          patterns are mutually exclusive options. That is, the parameter value
+          is expected to conform to at least one of the given patterns.
+        </c>
+
+        <c>placeholder</c>
+        <c><xref target="I-D.snell-activitystreams">Natural Language Value</xref></c>
+        <c>
+          An optional Natural Language Value providing a text hint that 
+          describes the expected value of the parameter.
+        </c>
+      </texttable>  
+      
+      
+      <figure><preamble>Using the Parameter Object in HtmlForm objects:</preamble><artwork>
+  {
+    "objectType": "HtmlForm",
+    "mediaType": "application/x-www-form-urlencoded",
+    "parameters": {
+      "foo": "string",
+      "bar": {
+        "displayName": "Bar",
+        "required": false,
+        "repeated": false,
+        "type": "unsignedInt",
+        "default": 3,
+        "minInclusive": 1,
+        "maxInclusive": 5
+      }
+    }
+  }
+      </artwork></figure>
+    </section>
+    
+      <section anchor="urltemplateparameters" title="Using UrlTemplate and TypedPayload objects as parameter descriptions">
+        
+        <t>
+          In certain cases, when the value of a parameter is expected to be 
+          either a URI or IRI, the <xref target="urltemplate">UrlTemplate 
+          objectType</xref> MAY be used as the parameter description. In 
+          such cases, the "required", "repeated", "default"
+          and "placeholder" properties from the <xref target="ParameterObject">
+          Parameter objectType</xref> can be used as additional properties 
+          within the UrlTemplate object. 
+        </t>
+        
+        <t>
+          For example:
+        </t>
+        
+        <figure><artwork>
+          {
+            "objectType": "HtmlForm",
+            "mediaType": "application/x-www-form-urlencoded",
+            "parameters": {
+              "foo": "http://example.org/FooProperty",
+              "bar": {
+                "objectType": "UrlTemplate",
+                "template": "http://example.org{/baz}",
+                "displayName": "Bar",
+                "required": false,
+                "repeated": false
+              }
+            }
+          }
+        </artwork></figure>
+        
+        <t>
+          Likewise, when the value of a parameter is expected to be an instance
+          of a specific MIME media type, the <xref target="typedPayload">TypedPayload 
+          objectType</xref> can be used.
+        </t>
+        
+        <figure><artwork>
+          {
+            "objectType": "HtmlForm",
+            "mediaType": "multipart/form-data",
+            "parameters": {
+              "file": {
+                "objectType": "TypedPayload",
+                "mediaType": "image/*",
+                "repeated": true
+              }
+            }
+          }
+        </artwork></figure>
+        
+      </section>
+      
+    </section>
+    
+    <section anchor="authentication" title="Authentication Object">
+      
+      <t>
+        An Authentication Object is used by Action Handlers that require
+        specific authentication options to be supported in order to carry
+        out the Action. The object is expresed as a JSON dictionary mapping
+        authentication schema labels to JSON dictionaries that provide
+        a specific description of properties and requirements specific to 
+        the scheme.
+      </t>
+      
+      <figure><preamble>Example Authentication details:</preamble><artwork>
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note",
+    "actions": {
+      "view": {
+        "objectType": "HttpActionHandler",
+        "method": "GET",
+        "url": "http://example.org/notes/1",
+        "auth": {
+          "basic": {
+            "realm": "http://example.org"
+          },
+          "oauth": {
+            "scopes": [
+              "some.oauth.scope",
+              "another.oauth.scope"
+            ]
+          }
+        }
+      }
+    }
+  }
+      </artwork></figure>
+      
+      <t>
+        This specification does not define the authentication schemes
+        or their associated properties. Unrecognized authentication 
+        schemes MAY be ignored. However, if an implementation fails to 
+        recognize any of the authentication schemes specified by an 
+        Action Handler, it might not be possible to successfully
+        carry out the Action.
+      </t>
+      
+    </section>
+    
+    <section anchor="stylesobject" title="Styles Object">
+      
+      <t>
+        A Styles Object is used by EmbedActionHandlers to provide
+        CSS style hints for the container within which embedded
+        content is to be displayed. The object is expressed as either 
+        a single JSON dictionary object mapping CSS property names to 
+        appropriate CSS values, or an array of JSON dictionary objects.
+        An optional "media" member can be included within the dictionary
+        providing a CSS Media Query.
+      </t>
+      
+      <figure><preamble>Example style hints:</preamble><artwork>
+{
+  "objectType": "note",
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
+  "actions": {
+    "view": {
+      "objectType": "EmbedActionHandler",
+      "content": "Some plain text content",
+      "mediaType": "text/plain",
+      "style": {
+        "height": "100px",
+        "width": "100px",
+        "box-shadow": "10px 10px 5px #888888"
+      }
+    }
+  }
+}
+      </artwork></figure>
+      
+      <figure><preamble>Multiple style hints for specific media query targets:</preamble><artwork>
+{
+  "objectType": "note",
+  "displayName": "A simple note object",
+  "content": "This is a simple note.",
+  "actions": {
+    "view": {
+      "objectType": "EmbedActionHandler",
+      "content": "Some plain text content",
+      "mediaType": "text/plain",
+      "style": [
+        {
+          "media": "print",
+          "height": "100px",
+          "width": "100px",
+          "box-shadow": "10px 10px 5px #888888"
+        },
+        {
+          "media": "screen and (orientation: landscape)",
+          "height": "100px",
+          "width": "100px",
+          "box-shadow": "10px 10px 5px #888888"
+        }
+      ]
+    }
+  }
+}
+      </artwork></figure>
+      
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t>TBD</t>
+    </section>
+
+    <section anchor="iana" title="IANA Considerations">
+      <t>TBD</t>
+    </section>
+
+  </middle>
+
+  <back>
+    <references title="Normative References">      
+      &rfc2119;
+      &rfc6570;
+      &as2;    
+      &xsd;  
+    </references>
+    
+    <section anchor="othervocabs" title="Using Action Handlers From Other Vocabularies">
+      
+      <t>
+        The Activity Streams 2.0 Actions mechanism is specifically designed
+        to allow Action Handlers from multiple vocabularies.
+      </t>
+      
+      <section title="Schema.org Actions Proposal">
+         
+        <t>Based on http://www.w3.org/wiki/images/b/b9/Actionsinschema.org.pdf:</t>
+         
+        <figure><artwork>
+  {
+    "objectType": "video",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "watch": [
+        {
+          "objectType": "http://schema.org/WebPageHandler",
+          "url": "http://movies.example.com/player?id=123" 
+        },
+        {
+          "objectType": "http://schema.org/AndroidHandler",
+          "url": "http://movies.example.com/player?id=123",
+          "package": "com.movies"
+        }
+      ]
+    }
+  }
+        </artwork></figure>
+        
+      </section>
+      
+      <section title="Google's &quot;Actions in the Inbox&quot;">
+        
+        <t>Based on https://developers.google.com/gmail/actions/reference/review-action:</t>
+        
+        <figure><artwork>      
+  {
+    "objectType": "note",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "review": {
+        "objectType": "http://schema.org/ReviewAction",
+        "review": {
+          "objectType": "http://schema.org/Review",
+          "itemReviewed": {
+            "objectType": "http://schema.org/FoodEstablishment",
+            "name": "Joe's Diner"
+          },
+          "reviewRating": {
+            "objectType": "http://schema.org/Rating",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        },
+        "handler": {
+          "objectType": "http://schema.org/HttpActionHandler",
+          "url": "http://reviews.com/review?id=123",
+          "requiredProperty": {
+            "objectType": "http://schema.org/Property",
+            "name": "review.reviewRating.ratingValue"
+          },
+          "method": "http://schema.org/HttpRequestMethod/POST"
+        }
+      }
+    }
+  }
+        </artwork></figure>
+        
+      </section>
+      
+      <section title="Mixing Vocabularies">
+         
+        <figure><artwork>
+  {
+    "objectType": "video",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "watch": [
+        {
+          "objectType": "HttpActionHandler",
+          "url": "http://movies.example.com/player?id=123", 
+          "target": "NEW"
+        },
+        {
+          "objectType": "http://schema.org/AndroidHandler",
+          "url": "http://movies.example.com/player?id=123",
+          "package": "com.movies"
+        }
+      ]
+    }
+  }
+        </artwork></figure>
+        
+      </section>
+      
+      <section title="Example Drawing From Multiple Vocabularies">
+        
+        <figure><artwork>
+  {
+    "objectType": "video",
+    "displayName": "A Movie!",
+    "displayName": "A simple note object",
+    "content": "This is a simple note.",
+    "actions": {
+      "watch": [
+        {
+          "objectType": "EmbedActionHandler",
+          "displayName": "HD",
+          "mediaType": "video/mpeg",
+          "url": "http://cdn.example.org?id=123amp;fmt=HD",
+        },
+        {
+          "objectType": "EmbedActionHandler",
+          "displayName": "SD",
+          "mediaType": "video/mpeg",
+          "url": "http://cdn.example.org?id=123&amp;fmt=SD",
+        },
+        {
+          "objectType": "application",
+          "displayName": "Watch on Netflix",
+          "url": "http://netflix.com..."
+        }
+      ],
+      "like": {
+        "objectType": "EmbedActionHandler",
+        "mediaType": "text/html",
+        "url": "http://www.facebook.com/plugins/like.php...",
+        "style": {
+          "width": "150px",
+          "height": "50px"
+        }
+      },
+      "share": [
+        {
+          "objectType": "HttpActionHandler",
+          "displayName": "Twitter",
+          "url": "https://twitter.com/share?url=...",
+          "target": "DIALOG"
+        },
+        {
+          "objectType": "HttpActionHandler",
+          "displayName": "Facebook",
+          "url": "https://www.facebook.com/sharer/sharer.php?u=...",
+          "target": "DIALOG"
+        }
+      ],
+      "save": [
+        {
+          "objectType": "service",
+          "id": "http://getpocket.com",
+          "displayName": "Pocket",
+          "context": {
+            "url": "http://example.org/movie?id=123",
+            "title": "A Movie!",
+            "tags": "foo, bar, baz"
+          }
+        },
+        {
+          "objectType": "service",
+          "id": "http://instapaper.com",
+          "displayName": "Instapaper",
+          "context": {
+            "url": "http://example.org/movie?id=123",
+            "title": "A Movie!",
+            "selection": "An action movie!"
+          }
+        }
+      ],
+      "review": {
+        "objectType": "HttpActionHandler",
+        "displayName": "Rate this movie!",
+        "url": "http://review.example.org/movie?id=123",
+        "method": "POST",
+        "expects": {
+          "objectType": "HtmlForm",
+          "mediaType": "application/x-www-form-urlencoded",
+          "parameters": {
+            "rating": {
+              "maxInclusive": 5,
+              "minInclusive": 0,
+              "fractionDigits": 2,
+              "totalDigits": 3
+              "type": "float",
+              "displayName": "Rating"
+            },
+            "comments": {
+              "displayName": "Comments",
+              "type": "string",
+              "required": false
+            }
+          }
+        }
+      }
+    }
+  }
+        </artwork></figure>
+        
+      </section>
+      
+    </section>
+    
+  </back>
+</rfc>

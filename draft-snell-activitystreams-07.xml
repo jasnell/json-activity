@@ -23,7 +23,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-05" >
+<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-07" >
   <front>
     <title abbrev="ActivityStreams">JSON Activity Streams 2.0</title>
 
@@ -34,7 +34,7 @@
       </address> 
     </author>
 
-    <date month="November" year="2013" />
+    <date month="April" year="2014" />
     <area>General</area> 
     <workgroup>Activity Streams (http://activitystrea.ms)</workgroup>
     <keyword>JSON</keyword>
@@ -768,7 +768,7 @@
           <c>object</c>
           <c><xref target="link">Link</xref> value</c>
           <c>
-            Describes the primary object of the activity. For instance,
+            Describes the direct object of the activity. For instance,
             in the activity, "John saved a movie to his wishlist", the object
             of the activity is "movie". An activity SHOULD contain an
             "object" property. If the "object" property is not contained, the
@@ -778,12 +778,12 @@
           <c>target</c>
           <c><xref target="link">Link</xref> value</c>
           <c>
-            Describes the target of the activity. The precise meaning of the
-            activity's target is dependent on the activities "verb",
+            Describes the indirect object of the activity. The precise meaning 
+            of the activity's target is dependent on the activities "verb",
             but will often be the object the English preposition "to".
             For instance, in the activity, "John saved a movie to his
             wishlist", the target of the activity is "wishlist". The activity
-            target MUST NOT be used to identity an indirect object that is
+            target MUST NOT be used to identify an indirect object that is
             not a target of the activity.
           </c>
 
@@ -793,6 +793,24 @@
             Describes the result of the activity. For instance, if a particular
             action results in the creation of a new resource, the "result" 
             property can be used to describe that new resource.
+          </c>
+
+          <c>instrument</c>
+          <c><xref target="link">Link</xref> value</c>
+          <c>
+            An optional Link Value that describes one or more objects 
+            used to perform the action. For instance, in the activity,
+            "Sally played music with a piano", the instrument of the 
+            activity is the "piano".
+          </c>
+
+          <c>participant</c>
+          <c><xref target="link">Link</xref> value</c>
+          <c>
+            An optional Link Value that describes one or more additional
+            actors that have or will indirectly participate in the activity.
+            For instance, in the Activity, "Sally went to the movies with Joe",
+            Sally is the primary "actor" while Joe is a "participant".
           </c>
           
           <c>priority</c>
@@ -805,6 +823,22 @@
             omitted or set to null, the assumption is that a default priority 
             can be assumed. The value 0.00 represents the lowest possible
             priority while 1.00 represents the highest.
+          </c>
+
+          <c>status</c>
+          <c>
+            One of "active", "canceled", "completed", "pending", "tentative",
+            or "voided"
+          </c>
+          <c>
+            An optional, explicit indicator of the current status of the Activity.
+            "active" indicates that the activity is ongoing; 
+            "canceled" indicates that the activity has been aborted;
+            "completed" indicates that the activity concluded;
+            "pending" indicates that the activity is expected to begin;
+            "tentative" indicates that the activity has been proposed; and
+            "voided" indicates that the activity statement has been 
+            retracted or should be considered invalid.
           </c>
         </texttable>
                 
@@ -1607,6 +1641,77 @@
         properties were not present.
       </t>
 
+      <section title="Extension verbs and objectTypes">
+
+        <t>
+          Verb and objectType identifiers are expressed in one of two 
+          ways: either as a simple token value matching the "isegment-nz-nc"
+          production in <xref target="RFC3987"/> or as an absolute IRI. 
+          When expressed as an IRI, it is RECOMMENDED that the final component 
+          (either the last path segment or fragment identifier) conforms
+          to the "isegment-nz-nc" production as well. For instance, 
+          "http://example.org/verbs/like" or "http://example.org/verbs#like".
+        </t>
+
+        <t>
+          When selecting a verb identifier that is a direct equivalent to a
+          natural language verb or action, it is RECOMMENDED that the final
+          isegment-nz-nc token is expressed as the "infinitive" or "base"
+          form of the natural language verb, without indication of 
+          linguistic tense, mood or aspect. For example, the verb identifier
+          "http://example.org/verbs/share" is preferable to alternative forms like
+          "http://example.org/verbs/shared" or "http://example.org/verbs/sharing".
+        </t>
+
+        <t>
+          Verb identifiers may also be idiomatic in nature. For example, an
+          activity such as "Joe flagged the post as inappropriate", could
+          be expressed using an idiomatic verb "flag-as-inappropriate":
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "flag-as-inappropriate",
+    "object": "http://example.org/posts/1"
+  }
+        </artwork></figure>
+
+        <t>
+          In such cases, the verb identifier may not necessarily correlate 
+          a single discrete linguistic verb infinitive, but SHOULD still 
+          be expressed in the infinitive form (e.g. "flag-as-inappropriate"
+          as opposed to "flagged-as-inappropriate"). 
+        </t>
+
+        <t>
+          When selecting an objectType identifier that is a 
+          direct equivalent to a natural language common noun, it is RECOMMENDED 
+          that the final isegment-nz-nc token is expressed in terms of a
+          singular instance of the object. For example, the objectType
+          identifier "http://example.org/objects#bird" is preferable to 
+          "http://example.org/objects#birds".
+        </t>
+
+        <t>
+          The objectType identifier MUST NOT be used to identify specific individual
+          instances of a class of object -- for instance, it would never be appropriate 
+          to have "objectType": "acct:joe@example.org", even though the value 
+          "acct:joe@example.org" is a valid absolute IRI.
+        </t>
+
+        <t>
+          Note, finally, that verb and objectType identifiers are not dependent
+          on language context. That is, while the natural language verbs
+          "speak" (English) and "hablar" (Spanish) are equivalent natural
+          language translations, they are not considered to be equivalent 
+          verb identifiers as defined in <xref target="id-comparison" />. 
+          Implementations are free to treat such variations as equivalent 
+          but doing so is considered beyond the scope of this specification.
+        </t>
+
+      </section>
+
     </section>
     
     <section anchor="security" title="Security Considerations">
@@ -1888,7 +1993,283 @@
 
     </section>
     
-    <section anchor="Appendix-B" title="Motivational Use Cases">
+    <section anchor="Appendix-B" title="Activity Statement Linguistic Forms">
+
+      <t>
+        The Activity Streams format has been intentionally designed to 
+        be flexible in how statements about past, present or future
+        actions can be expressed.
+      </t>
+
+      <section anchor="intransitive" title="Intransitive Activity">
+
+        <t>
+          In many situations, the "actor" of an Activity also serves
+          as the "direct object". For example, if I say, 
+          "The process terminated", then the "process" is both the
+          "actor" and the "object". Such statements are formally
+          known as being "intransitive".
+        </t>
+
+        <t>
+          To describe intransitive actions using the Activity Streams 
+          syntax, simply omit the "object" property:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": {
+      "objectType": "process",
+      "displayName": "Build Process"
+    },
+    "verb": "terminate"
+  }
+        </artwork></figure>
+
+      </section>
+
+      <section anchor="transitive" title="Transitive Activity">
+
+        <t>
+          In a "transitive" activity, the actor and direct object
+          are distinct entities. This is the form most commonly 
+          expressed using the Activity Streams format. For instance,
+          if I say, "Joe posted a blog entry", the actor is "Joe"
+          and the "blog entry" is the direct object.
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "post",
+    "object": {
+      "objectType": "article",
+      "title": "A Blog Entry",
+      "content": "..."
+    }
+  }
+        </artwork></figure>
+
+      </section>
+
+      <section anchor="ditransitive" title="Ditransitive Activity">
+
+        <t>
+          In "ditransitive" activities, there exist distinct actor,
+          direct and indirect objects. The indirect object specifies
+          the target to which the action on the direct object has 
+          been directed. For instance, in "Joe posted a blog entry
+          to his Weblog", the indirect object (or "target") is 
+          "Joe's Weblog".
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "post",
+    "object": {
+      "objectType": "article",
+      "title": "A Blog Entry",
+      "content": "..."
+    },
+    "target": {
+      "objectType": "blog",
+      "title": "Joe's Weblog"
+    }
+  }
+        </artwork></figure>
+
+      </section>
+
+      <section anchor="tense-and-aspect" title="Expressing tense and aspect">
+
+        <t>
+          By using the "startTime", "endTime", "duration" and "status" properties, 
+          Activity statements can be used to express past, present or future 
+          actions. Implementations should never rely on an activity statement's 
+          verb identifier to determine the tense or aspect of the action.
+        </t>
+
+        <t>
+          For instance, to indicate an activity that has already concluded,
+          the startTime and endTime properties would be used to indicate 
+          past points in time: 
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "post",
+    "object": "http://example.org/blog/entry/1",
+    "startTime": "2012-12-12T12:12:12Z",
+    "endTime": "2012-12-12T12:12:12Z"
+  }
+        </artwork></figure>
+
+        <t>
+          If specific start and end times for a concluded activity are not 
+          available, the "status" property can be used to expressly indicate
+          that the action has completed:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "post",
+    "object": "http://example.org/blog/entry/1",
+    "status": "completed"
+  }
+        </artwork></figure>  
+
+        <t>
+          To indicate an activity that began in the past but is still ongoing,
+          only the startTime property would be used:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "watch",
+    "object": "http://movies.example.org/movie/1",
+    "startTime": "2014-03-18T04:32:43Z"
+  }
+        </artwork></figure>
+
+        <t>
+          The status property value "active" can also be used to identify
+          ongoing activities:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "watch",
+    "object": "http://movies.example.org/movie/1",
+    "status": "active"
+  }
+        </artwork></figure>
+
+        <t>
+          To indicate an activity that is expected to begin in the future,
+          the startTime property would indicate a future point in time:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "cook",
+    "object": "http://recipes.example.org/recipe/1",
+    "startTime": "2015-12-23T12:34:21Z"
+  }
+        </artwork></figure>
+
+        <t>
+          Or, alternatively:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:joe@example.org",
+    "verb": "cook",
+    "object": "http://recipes.example.org/recipe/1",
+    "status": "pending"
+  }
+        </artwork></figure>
+
+        <t>
+          The status values "pending" and "tentative" differ in that
+          the former is used to mark actions that are expected
+          to happen while the latter is used to mark proposed actions 
+          that may (or may not) happen.
+        </t>
+
+        <t>
+          As an alternative to explicitly stating the "startTime"
+          or "endTime" properties, the "duration" property can be
+          used to indicate a specific duration of time relative to
+          either the "startTime" or "endTime". For instance, 
+          specifying an "endTime" of "2015-12-23T12:23:23Z" with 
+          a duration of "PT1H", implies a startTime of exactly
+          "2015-12-23T11:23:23Z" (1 hour before the specified
+          endTime).
+        </t>
+
+        <t>
+          Note that the value of the "duration" property can be 
+          expressed either as a non-negative integer specifying
+          a number of seconds, or as an <xref target="RFC3339"/>
+          "duration" string such as "PT1H", "P1DT1H", etc. For
+          Activity Streams 2.0 implementations for which backwards
+          compatibility with the Activity Streams 1.0 syntax is
+          not critical, the RFC 3339 string format is strongly
+          recommended.
+        </t>
+
+      </section>
+
+      <section anchor="duration" title="Activity Duration">
+
+        <t>
+          Actions expressed via the Activity Streams format can either
+          be instantaneous (semelfactive) or durative (having distinct
+          start and end times). The specific duration of an activity 
+          can be optionally expressed using the "startTime", 
+          "endTime" and "duration" properties.
+        </t>
+
+        <t>
+          By default, all activities are assumed to occur instantaneously,
+          that is, occuring at one point in time without any specific 
+          duration. Such events are indicated by omitting the "startTime",
+          "endTime" or "duration" properties:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:sally@example.org",
+    "verb": "post",
+    "object": "http://example.org/notes/1"
+  }
+        </artwork></figure>
+
+        <t>
+          An activity that occurs within a specific period of time can be
+          expressed using combinations of either: "startTime" and "endTime",
+          "startTime" and "duration", or "endTime" and "duration". For 
+          example:
+        </t>
+
+        <figure><artwork>
+  {
+    "actor": "acct:sally@example.org",
+    "verb": "watch",
+    "object": "http://movies.example.org/movies/1",
+    "startTime": "2014-05-23T12:23:12Z",
+    "endTime": "2014-05-23T13:25:15Z"
+  }
+
+  {
+    "actor": "acct:sally@example.org",
+    "verb": "watch",
+    "object": "http://movies.example.org/movies/1",
+    "startTime": "2014-05-23T12:23:12Z",
+    "duration": "PT1H2M3S"
+  }
+
+  {
+    "actor": "acct:sally@example.org",
+    "verb": "watch",
+    "object": "http://movies.example.org/movies/1",
+    "duration": "PT1H2M3S",
+    "endTime": "2014-05-23T13:25:15Z"
+  }
+        </artwork></figure>
+
+      </section>
+
+    </section>
+
+    <section anchor="Appendix-C" title="Motivational Use Cases">
       
       <t>
         This specification defines a number of syntax changes relative
