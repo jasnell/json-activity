@@ -23,7 +23,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-07" >
+<rfc category="std" ipr="trust200902" docName="draft-snell-activitystreams-08" >
   <front>
     <title abbrev="ActivityStreams">JSON Activity Streams 2.0</title>
 
@@ -34,7 +34,7 @@
       </address> 
     </author>
 
-    <date month="April" year="2014" />
+    <date month="May" year="2014" />
     <area>General</area> 
     <workgroup>Activity Streams (http://activitystrea.ms)</workgroup>
     <keyword>JSON</keyword>
@@ -1769,7 +1769,7 @@
 
     <section anchor="iana" title="IANA Considerations">
       
-      <section anchor="media-type" title="application/activity+xml Media Type">
+      <section anchor="media-type" title="application/activity+json Media Type">
         
         <t>
           This specification registers the application/activity+json 
@@ -2307,7 +2307,7 @@
         
         <figure><artwork><![CDATA[
   POST /activity/feed HTTP/1.1
-  Content-Type: application/activity+xml
+  Content-Type: application/activity+json
   
   {
     "verb": "post",

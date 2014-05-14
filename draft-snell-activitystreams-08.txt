@@ -4,12 +4,12 @@
 
 Activity Streams (http://activitystrea.ms)                 J. Snell, Ed.
 Internet-Draft                                                       IBM
-Intended status: Standards Track                          April 19, 2014
-Expires: October 21, 2014
+Intended status: Standards Track                            May 14, 2014
+Expires: November 15, 2014
 
 
                        JSON Activity Streams 2.0
-                     draft-snell-activitystreams-07
+                     draft-snell-activitystreams-08
 
 Abstract
 
@@ -47,15 +47,15 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 21, 2014.
+   This Internet-Draft will expire on November 15, 2014.
 
 
 
 
 
-Snell                   Expires October 21, 2014                [Page 1]
+Snell                   Expires November 15, 2014               [Page 1]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 Copyright Notice
@@ -105,13 +105,13 @@ Table of Contents
      8.1.  Extension verbs and objectTypes . . . . . . . . . . . . .  28
    9.  Security Considerations . . . . . . . . . . . . . . . . . . .  29
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  30
-     10.1.  application/activity+xml Media Type  . . . . . . . . . .  30
+     10.1.  application/activity+json Media Type . . . . . . . . . .  30
 
 
 
-Snell                   Expires October 21, 2014                [Page 2]
+Snell                   Expires November 15, 2014               [Page 2]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    11. References  . . . . . . . . . . . . . . . . . . . . . . . . .  31
@@ -165,9 +165,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 3]
+Snell                   Expires November 15, 2014               [Page 3]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    While the syntax defined by this specification diverges somewhat from
@@ -221,9 +221,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 4]
+Snell                   Expires November 15, 2014               [Page 4]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    o  The "language" property MUST be treated as an alias of JSON-LD
@@ -277,9 +277,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 5]
+Snell                   Expires November 15, 2014               [Page 5]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 2.1.  Example 1: Minimal Activity
@@ -333,9 +333,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 6]
+Snell                   Expires November 15, 2014               [Page 6]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 2.3.  Example 3: An extended activity
@@ -389,9 +389,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 7]
+Snell                   Expires November 15, 2014               [Page 7]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
           "target": {
@@ -445,9 +445,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 8]
+Snell                   Expires November 15, 2014               [Page 8]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    +-------------+---------------+-------------------------------------+
@@ -501,9 +501,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014                [Page 9]
+Snell                   Expires November 15, 2014               [Page 9]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    For instance, the "displayName" property in all objects is a Natural
@@ -557,9 +557,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 10]
+Snell                   Expires November 15, 2014              [Page 10]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    Object type as an object:
@@ -613,9 +613,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 11]
+Snell                   Expires November 15, 2014              [Page 11]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    It is important to note that because the "id" property is strictly
@@ -669,9 +669,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 12]
+Snell                   Expires November 15, 2014              [Page 12]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    If more than one link value is to be expressed, A JSON Array with a
@@ -725,9 +725,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 13]
+Snell                   Expires November 15, 2014              [Page 13]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    When an object (Section 3.1) is used to represent a Link value, the
@@ -781,9 +781,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 14]
+Snell                   Expires November 15, 2014              [Page 14]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    |             |               | property. If the "object" property  |
@@ -837,9 +837,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 15]
+Snell                   Expires November 15, 2014              [Page 15]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    |             |               | 0.00 represents the lowest possible |
@@ -893,9 +893,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 16]
+Snell                   Expires November 15, 2014              [Page 16]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 3.5.2.  Audience Targeting Properties
@@ -949,9 +949,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 17]
+Snell                   Expires November 15, 2014              [Page 17]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    When the event source generates the activity and specifies values for
@@ -1005,9 +1005,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 18]
+Snell                   Expires November 15, 2014              [Page 18]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    |             | 3.4) value      | referencing one or more objects   |
@@ -1061,9 +1061,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 19]
+Snell                   Expires November 15, 2014              [Page 19]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    | provider    | Link (Section   | A Link (Section 3.4) value        |
@@ -1117,9 +1117,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 20]
+Snell                   Expires November 15, 2014              [Page 20]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    |             |                 | function with the key difference  |
@@ -1173,9 +1173,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 21]
+Snell                   Expires November 15, 2014              [Page 21]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    verbs to Link (Section 3.4) values referencing resources or objects
@@ -1229,9 +1229,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 22]
+Snell                   Expires November 15, 2014              [Page 22]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    The value of the Collection object's "objectType" property MUST be
@@ -1285,9 +1285,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 23]
+Snell                   Expires November 15, 2014              [Page 23]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    |              |               | preceeding page of a multi-page    |
@@ -1341,9 +1341,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 24]
+Snell                   Expires November 15, 2014              [Page 24]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    +-----------+---------------+---------------------------------------+
@@ -1397,9 +1397,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 25]
+Snell                   Expires November 15, 2014              [Page 25]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 5.  Reserved Object Types and Verbs
@@ -1453,9 +1453,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 26]
+Snell                   Expires November 15, 2014              [Page 26]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    Specifically:
@@ -1509,9 +1509,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 27]
+Snell                   Expires November 15, 2014              [Page 27]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    be based solely on the character strings themselves and MUST NOT rely
@@ -1565,9 +1565,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 28]
+Snell                   Expires November 15, 2014              [Page 28]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    When selecting an objectType identifier that is a direct equivalent
@@ -1621,9 +1621,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 29]
+Snell                   Expires November 15, 2014              [Page 29]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    Activity Streams are JSON Documents and are subject to the same
@@ -1637,7 +1637,7 @@ Internet-Draft               ActivityStreams                  April 2014
 
 10.  IANA Considerations
 
-10.1.  application/activity+xml Media Type
+10.1.  application/activity+json Media Type
 
    This specification registers the application/activity+json MIME Media
    Type:
@@ -1677,9 +1677,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 30]
+Snell                   Expires November 15, 2014              [Page 30]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
       Intended usage: COMMON
@@ -1733,9 +1733,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 31]
+Snell                   Expires November 15, 2014              [Page 31]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 11.2.  Informational References
@@ -1789,9 +1789,9 @@ Appendix A.  Acknowledgements
 
 
 
-Snell                   Expires October 21, 2014               [Page 32]
+Snell                   Expires November 15, 2014              [Page 32]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    Hamlin, Kevin Marks, Laurent Eschenauer, Laurie Voss, Leah Culver,
@@ -1845,9 +1845,9 @@ Appendix B.  Processing as JSON-LD
 
 
 
-Snell                   Expires October 21, 2014               [Page 33]
+Snell                   Expires November 15, 2014              [Page 33]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
      {
@@ -1901,9 +1901,9 @@ C.1.  Intransitive Activity
 
 
 
-Snell                   Expires October 21, 2014               [Page 34]
+Snell                   Expires November 15, 2014              [Page 34]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
      {
@@ -1957,9 +1957,9 @@ C.3.  Ditransitive Activity
 
 
 
-Snell                   Expires October 21, 2014               [Page 35]
+Snell                   Expires November 15, 2014              [Page 35]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 C.4.  Expressing tense and aspect
@@ -2013,9 +2013,9 @@ C.4.  Expressing tense and aspect
 
 
 
-Snell                   Expires October 21, 2014               [Page 36]
+Snell                   Expires November 15, 2014              [Page 36]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
      {
@@ -2069,9 +2069,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 37]
+Snell                   Expires November 15, 2014              [Page 37]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 C.5.  Activity Duration
@@ -2125,9 +2125,9 @@ C.5.  Activity Duration
 
 
 
-Snell                   Expires October 21, 2014               [Page 38]
+Snell                   Expires November 15, 2014              [Page 38]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 Appendix D.  Motivational Use Cases
@@ -2159,7 +2159,7 @@ D.1.  Internationalization (i18n)
    following activity to this system:
 
      POST /activity/feed HTTP/1.1
-     Content-Type: application/activity+xml
+     Content-Type: application/activity+json
 
      {
        "verb": "post",
@@ -2181,9 +2181,9 @@ D.1.  Internationalization (i18n)
 
 
 
-Snell                   Expires October 21, 2014               [Page 39]
+Snell                   Expires November 15, 2014              [Page 39]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
      {
@@ -2237,9 +2237,9 @@ D.2.  Extensibility (e11y)
 
 
 
-Snell                   Expires October 21, 2014               [Page 40]
+Snell                   Expires November 15, 2014              [Page 40]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    With Activity Streams 1.0, a number of different approaches have been
@@ -2293,9 +2293,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 41]
+Snell                   Expires November 15, 2014              [Page 41]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 D.2.1.  Publishing Extension objectType and verb Libraries
@@ -2349,9 +2349,9 @@ D.3.  First Class Links
 
 
 
-Snell                   Expires October 21, 2014               [Page 42]
+Snell                   Expires November 15, 2014              [Page 42]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
      {
@@ -2405,9 +2405,9 @@ Internet-Draft               ActivityStreams                  April 2014
 
 
 
-Snell                   Expires October 21, 2014               [Page 43]
+Snell                   Expires November 15, 2014              [Page 43]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
 D.4.  Use of External Vocabularies
@@ -2461,9 +2461,9 @@ D.4.  Use of External Vocabularies
 
 
 
-Snell                   Expires October 21, 2014               [Page 44]
+Snell                   Expires November 15, 2014              [Page 44]
 
-Internet-Draft               ActivityStreams                  April 2014
+Internet-Draft               ActivityStreams                    May 2014
 
 
    the Activity Streams format to extend to a broader range of scenarios
@@ -2517,4 +2517,4 @@ Author's Address
 
 
 
-Snell                   Expires October 21, 2014               [Page 45]
+Snell                   Expires November 15, 2014              [Page 45]
